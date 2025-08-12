@@ -1,0 +1,20 @@
+#fortiveax-dashboard {
+    .fortiveax-dashboard-app {
+        padding: 20px;
+
+        h2 {
+            margin-top: 1.5rem;
+        }
+
+        ul {
+            margin-left: 20px;
+            list-style: disc;
+        }
+
+        pre {
+            background: #fff;
+            padding: 15px;
+            overflow: auto;
+        }
+    }
+}
