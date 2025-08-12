@@ -74,7 +74,8 @@ function fortiveax_enqueue_assets() {
                 'primary'   => get_theme_mod( 'primary_color', '#0d6efd' ),
                 'secondary' => get_theme_mod( 'secondary_color', '#6c757d' ),
             ),
-            'toggle' => (bool) get_theme_mod( 'theme_toggle', true ),
+            'toggle'   => (bool) get_theme_mod( 'theme_toggle', true ),
+            'ajax_url' => admin_url( 'admin-ajax.php' ),
         );
         wp_localize_script( 'fortiveax-theme', 'fortiveaX', $theme_options );
     }
@@ -83,3 +84,4 @@ add_action( 'wp_enqueue_scripts', 'fortiveax_enqueue_assets' );
 require_once get_template_directory() . '/inc/options.php';
 require_once get_template_directory() . '/inc/custom-post-types.php';
 require_once get_template_directory() . '/inc/blocks.php';
+require_once get_template_directory() . '/inc/contact-form.php';

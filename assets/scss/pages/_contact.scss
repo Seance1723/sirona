@@ -1,0 +1,58 @@
+/* stylelint-disable no-descending-specificity */
+.contact-page {
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 600px;
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      align-self: flex-start;
+    }
+  }
+
+  .contact-toast {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    background: #333;
+    color: #fff;
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+
+    &.visible {
+      opacity: 1;
+    }
+  }
+
+  /* Optional compatibility styles for CF7 and WPForms */
+  .wpcf7 form,
+  .wpforms-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    input[type='submit'],
+    button[type='submit'] {
+      align-self: flex-start;
+    }
+  }
+}
