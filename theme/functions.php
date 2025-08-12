@@ -47,7 +47,14 @@ add_action( 'widgets_init', 'fortiveax_widgets_init' );
  * Enqueue theme assets.
  */
 function fortiveax_enqueue_assets() {
-@@ -54,26 +58,26 @@ function fortiveax_enqueue_assets() {
+    $dist_path = get_template_directory() . '/dist';
+    $dist_uri  = get_template_directory_uri() . '/dist';
+
+    if ( file_exists( "$dist_path/style.css" ) ) {
+        wp_enqueue_style( 'fortiveax-style', "$dist_uri/style.css", array(), filemtime( "$dist_path/style.css" ) );
+    }
+
+    if ( file_exists( "$dist_path/animate.min.css" ) ) {
         wp_enqueue_style( 'animate', "$dist_uri/animate.min.css", array(), filemtime( "$dist_path/animate.min.css" ) );
     }
 

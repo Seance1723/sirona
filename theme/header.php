@@ -26,6 +26,18 @@ $header_class = implode( ' ', array_map( 'sanitize_html_class', $header_classes 
 $logo       = fxo( 'logo' );
 $logo_dark  = fxo( 'logo_dark', $logo );
 ?>
+<?php
+$header_classes = array( 'site-header' );
+if ( fxo( 'header_sticky' ) ) {
+    $header_classes[] = 'is-sticky';
+}
+if ( is_front_page() && fxo( 'show_hero', 1 ) ) {
+    $header_classes[] = 'is-transparent';
+}
+$header_class = implode( ' ', array_map( 'sanitize_html_class', $header_classes ) );
+$logo       = fxo( 'logo' );
+$logo_dark  = fxo( 'logo_dark', $logo );
+?>
 <header class="<?php echo esc_attr( $header_class ); ?>">
     <div class="header-inner">
         <div class="site-branding">
@@ -76,6 +88,31 @@ $logo_dark  = fxo( 'logo_dark', $logo );
         </button>
     </div>
 </header>
+<div id="mobile-menu" class="mobile-menu off-canvas" aria-hidden="true">
+    <button class="close-menu" aria-label="<?php esc_attr_e( 'Close menu', 'fortiveax' ); ?>">&times;</button>
+    <?php
+    wp_nav_menu(
+        array(
+            'theme_location' => 'primary',
+            'menu_id'        => 'mobile-menu-list',
+            'container'      => false,
+        )
+    );
+    if ( has_nav_menu( 'secondary' ) ) {
+        wp_nav_menu(
+            array(
+                'theme_location' => 'secondary',
+                'menu_id'        => 'mobile-secondary-menu',
+                'container'      => false,
+            )
+        );
+    }
+    ?>
+</div>
+<div id="search-modal" class="search-modal" aria-hidden="true">
+    <button class="close-search" aria-label="<?php esc_attr_e( 'Close search', 'fortiveax' ); ?>">&times;</button>
+    <?php get_search_form(); ?>
+</div>
 <div id="mobile-menu" class="mobile-menu off-canvas" aria-hidden="true">
     <button class="close-menu" aria-label="<?php esc_attr_e( 'Close menu', 'fortiveax' ); ?>">&times;</button>
     <?php
