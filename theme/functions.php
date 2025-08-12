@@ -15,9 +15,13 @@ function fortiveax_setup() {
         'flex-height' => true,
         'flex-width'  => true,
     ) );
-    register_nav_menus( array(
-        'primary' => __( 'Primary Menu', 'fortiveax' ),
-    ) );
+    register_nav_menus(
+        array(
+            'primary'   => __( 'Primary Menu', 'fortiveax' ),
+            'secondary' => __( 'Secondary Menu', 'fortiveax' ),
+            'footer'    => __( 'Footer Menu', 'fortiveax' ),
+        )
+    );
     add_theme_support( 'editor-styles' );
     add_editor_style( 'dist/style.css' );
 }
@@ -43,14 +47,7 @@ add_action( 'widgets_init', 'fortiveax_widgets_init' );
  * Enqueue theme assets.
  */
 function fortiveax_enqueue_assets() {
-    $dist_path = get_template_directory() . '/dist';
-    $dist_uri  = get_template_directory_uri() . '/dist';
-
-    if ( file_exists( "$dist_path/style.css" ) ) {
-        wp_enqueue_style( 'fortiveax-style', "$dist_uri/style.css", array(), filemtime( "$dist_path/style.css" ) );
-    }
-
-    if ( file_exists( "$dist_path/animate.min.css" ) ) {
+@@ -54,26 +58,26 @@ function fortiveax_enqueue_assets() {
         wp_enqueue_style( 'animate', "$dist_uri/animate.min.css", array(), filemtime( "$dist_path/animate.min.css" ) );
     }
 

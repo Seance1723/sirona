@@ -16,8 +16,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 function fortiveax_default_options() {
     return array(
         'logo'             => '',
+        'logo_dark'        => '',
         'header_sticky'    => 0,
         'footer_text'      => '',
+        'social_links'     => '',
         'body_font'        => 'Arial, sans-serif',
         'primary_color'    => '#000000',
         'container_width'  => '1200',
@@ -43,8 +45,7 @@ function fortiveax_default_options() {
 function fxo( $key, $fallback = '' ) {
     $options = get_option( 'fortiveax_options', fortiveax_default_options() );
     return isset( $options[ $key ] ) && '' !== $options[ $key ] ? $options[ $key ] : $fallback;
-}
-
+@@ -48,85 +50,97 @@ function fxo( $key, $fallback = '' ) {
 /**
  * Add options page to the Appearance menu.
  */
@@ -70,6 +71,7 @@ function fortiveax_settings_init() {
         'branding'      => __( 'Branding', 'fortiveax' ),
         'header'        => __( 'Header', 'fortiveax' ),
         'footer'        => __( 'Footer', 'fortiveax' ),
+        'social'        => __( 'Social', 'fortiveax' ),
         'typography'    => __( 'Typography', 'fortiveax' ),
         'colors'        => __( 'Colors', 'fortiveax' ),
         'layout'        => __( 'Layout', 'fortiveax' ),
@@ -92,6 +94,10 @@ function fortiveax_settings_init() {
         'label_for' => 'logo',
         'type'      => 'text',
     ) );
+    add_settings_field( 'logo_dark', __( 'Dark Logo URL', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_branding', 'fortiveax_branding_section', array(
+        'label_for' => 'logo_dark',
+        'type'      => 'text',
+    ) );
 
     // Header.
     add_settings_field( 'header_sticky', __( 'Enable Sticky Header', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_header', 'fortiveax_header_section', array(
@@ -103,6 +109,13 @@ function fortiveax_settings_init() {
     add_settings_field( 'footer_text', __( 'Footer Text', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_footer', 'fortiveax_footer_section', array(
         'label_for' => 'footer_text',
         'type'      => 'text',
+    ) );
+
+    // Social.
+    add_settings_field( 'social_links', __( 'Social Links', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_social', 'fortiveax_social_section', array(
+        'label_for'   => 'social_links',
+        'type'        => 'textarea',
+        'description' => __( 'One per line: network|URL', 'fortiveax' ),
     ) );
 
     // Typography.
@@ -130,56 +143,7 @@ function fortiveax_settings_init() {
     ) );
 
     // Blog.
-    add_settings_field( 'posts_per_page', __( 'Posts Per Page', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_blog', 'fortiveax_blog_section', array(
-        'label_for' => 'posts_per_page',
-        'type'      => 'number',
-    ) );
-
-    // CTA.
-    add_settings_field( 'cta_text', __( 'CTA Text', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_cta', 'fortiveax_cta_section', array(
-        'label_for' => 'cta_text',
-        'type'      => 'text',
-    ) );
-
-    // Integrations.
-    add_settings_field( 'google_analytics', __( 'Google Analytics ID', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_integrations', 'fortiveax_integrations_section', array(
-        'label_for' => 'google_analytics',
-        'type'      => 'text',
-    ) );
-
-    // Performance.
-    add_settings_field( 'lazy_load', __( 'Enable Lazy Load', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_performance', 'fortiveax_performance_section', array(
-        'label_for' => 'lazy_load',
-        'type'      => 'checkbox',
-    ) );
-
-    // SEO.
-    add_settings_field( 'meta_description', __( 'Meta Description', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_seo', 'fortiveax_seo_section', array(
-        'label_for' => 'meta_description',
-        'type'      => 'text',
-    ) );
-
-    // Accessibility.
-    add_settings_field( 'high_contrast', __( 'Enable High Contrast', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_accessibility', 'fortiveax_accessibility_section', array(
-        'label_for' => 'high_contrast',
-        'type'      => 'checkbox',
-    ) );
-
-    // Import/Export.
-    add_settings_field( 'import_export', __( 'Import/Export Data', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_import', 'fortiveax_import_section', array(
-        'label_for'   => 'import_export',
-        'type'        => 'textarea',
-        'description' => __( 'Paste export data here or copy current settings.', 'fortiveax' ),
-    ) );
-}
-add_action( 'admin_init', 'fortiveax_settings_init' );
-
-/**
- * Sanitize options before saving.
- *
- * @param array $input Raw input values.
- *
- * @return array
+@@ -183,50 +197,53 @@ add_action( 'admin_init', 'fortiveax_settings_init' );
  */
 function fortiveax_sanitize_options( $input ) {
     $defaults = fortiveax_default_options();
@@ -203,6 +167,9 @@ function fortiveax_sanitize_options( $input ) {
                 $output[ $key ]   = $color ? $color : $default;
                 break;
             case 'import_export':
+                $output[ $key ] = isset( $input[ $key ] ) ? sanitize_textarea_field( $input[ $key ] ) : $default;
+                break;
+            case 'social_links':
                 $output[ $key ] = isset( $input[ $key ] ) ? sanitize_textarea_field( $input[ $key ] ) : $default;
                 break;
             default:
@@ -230,61 +197,7 @@ function fortiveax_field_cb( $args ) {
             break;
         case 'number':
             printf( '<input type="number" id="%1$s" name="fortiveax_options[%1$s]" value="%2$s" class="small-text" />', esc_attr( $key ), esc_attr( $value ) );
-            break;
-        case 'color':
-            printf( '<input type="text" class="fortiveax-color-picker" id="%1$s" name="fortiveax_options[%1$s]" value="%2$s" />', esc_attr( $key ), esc_attr( $value ) );
-            break;
-        case 'textarea':
-            printf( '<textarea id="%1$s" name="fortiveax_options[%1$s]" rows="5" cols="50">%2$s</textarea>', esc_attr( $key ), esc_textarea( $value ) );
-            break;
-        default:
-            printf( '<input type="text" id="%1$s" name="fortiveax_options[%1$s]" value="%2$s" class="regular-text" />', esc_attr( $key ), esc_attr( $value ) );
-    }
-
-    if ( ! empty( $args['description'] ) ) {
-        printf( '<p class="description">%s</p>', esc_html( $args['description'] ) );
-    }
-}
-
-/**
- * Enqueue admin scripts for color picker.
- *
- * @param string $hook Current admin page.
- */
-function fortiveax_admin_enqueue( $hook ) {
-    if ( 'appearance_page_fortiveax-options' !== $hook ) {
-        return;
-    }
-
-    wp_enqueue_style( 'wp-color-picker' );
-    wp_enqueue_script( 'wp-color-picker' );
-}
-add_action( 'admin_enqueue_scripts', 'fortiveax_admin_enqueue' );
-
-/**
- * Render the options page.
- */
-function fortiveax_options_page_html() {
-    if ( ! current_user_can( 'manage_options' ) ) {
-        return;
-    }
-
-    $tabs       = array(
-        'branding'      => __( 'Branding', 'fortiveax' ),
-        'header'        => __( 'Header', 'fortiveax' ),
-        'footer'        => __( 'Footer', 'fortiveax' ),
-        'typography'    => __( 'Typography', 'fortiveax' ),
-        'colors'        => __( 'Colors', 'fortiveax' ),
-        'layout'        => __( 'Layout', 'fortiveax' ),
-        'home'          => __( 'Home Sections', 'fortiveax' ),
-        'blog'          => __( 'Blog', 'fortiveax' ),
-        'cta'           => __( 'CTA', 'fortiveax' ),
-        'integrations'  => __( 'Integrations', 'fortiveax' ),
-        'performance'   => __( 'Performance', 'fortiveax' ),
-        'seo'           => __( 'SEO', 'fortiveax' ),
-        'accessibility' => __( 'Accessibility', 'fortiveax' ),
-        'import'        => __( 'Import/Export', 'fortiveax' ),
-    );
+@@ -288,26 +305,26 @@ function fortiveax_options_page_html() {
 
     $active_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'branding';
     if ( ! array_key_exists( $active_tab, $tabs ) ) {
