@@ -1,0 +1,19 @@
+/* stylelint-disable */
+@import "../abstracts/mixins";
+
+[dir="rtl"] {
+  direction: rtl;
+}
+
+@include high-contrast {
+  * {
+    outline: 2px solid currentColor;
+  }
+}
+
+@include reduced-motion {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

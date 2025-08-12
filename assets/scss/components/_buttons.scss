@@ -1,0 +1,7 @@
+/* stylelint-disable */
+.btn-custom {
+  background-color: map-get($colors, "primary");
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+}

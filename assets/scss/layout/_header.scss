@@ -1,0 +1,6 @@
+/* stylelint-disable */
+.header {
+  background-color: map-get($colors, "light");
+  color: map-get($colors, "dark");
+  padding: 1rem;
+}

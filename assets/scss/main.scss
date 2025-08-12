@@ -1,5 +1,11 @@
+/* stylelint-disable */
 /* Main SCSS entry point for FortiveaX theme */
-
-body {
-  font-family: sans-serif;
-}
+@import "abstracts/variables";
+@import "abstracts/mixins";
+@import "themes/light";
+@import "themes/dark";
+@import "vendors/bootstrap";
+@import "base/helpers";
+@import "layout/header";
+@import "components/buttons";
+@import "pages/home";

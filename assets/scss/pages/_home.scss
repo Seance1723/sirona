@@ -1,0 +1,6 @@
+/* stylelint-disable */
+.page-home {
+  .welcome {
+    color: map-get($colors, "primary");
+  }
+}

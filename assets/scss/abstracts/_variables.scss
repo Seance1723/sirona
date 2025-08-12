@@ -1,0 +1,12 @@
+/* stylelint-disable */
+/* Color system using CSS variables and SCSS map */
+$colors: (
+  "primary": var(--color-primary),
+  "secondary": var(--color-secondary),
+  "success": var(--color-success),
+  "info": var(--color-info),
+  "warning": var(--color-warning),
+  "danger": var(--color-danger),
+  "light": var(--color-light),
+  "dark": var(--color-dark)
+);
