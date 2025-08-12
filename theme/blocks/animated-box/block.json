@@ -1,0 +1,24 @@
+{
+  "apiVersion": 2,
+  "name": "fortiveax/animated-box",
+  "title": "Animated Box",
+  "category": "widgets",
+  "icon": "format-image",
+  "description": "Box with optional GSAP animation and visibility controls.",
+  "attributes": {
+    "content": { "type": "string", "source": "html", "selector": "div" },
+    "animation": { "type": "string", "default": "none" },
+    "hideDesktop": { "type": "boolean", "default": false },
+    "hideTablet": { "type": "boolean", "default": false },
+    "hideMobile": { "type": "boolean", "default": false }
+  },
+  "supports": {
+    "color": { "text": true, "background": true },
+    "spacing": { "margin": true, "padding": true },
+    "align": ["left", "center", "right", "wide", "full"]
+  },
+  "editorScript": "file:./build/index.js",
+  "style": "file:./style.css",
+  "viewScript": "file:./view.js",
+  "render": "file:./render.php"
+}

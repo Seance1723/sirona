@@ -9,10 +9,13 @@
     "zip-theme": "npm run build && cd theme && zip -r ../fortiveax.zip .",
     "lint:js": "eslint assets/js",
     "lint:css": "stylelint 'assets/scss/**/*.scss'",
-    "lint": "npm run lint:js && npm run lint:css"
+    "lint": "npm run lint:js && npm run lint:css",
+    "blocks:build": "wp-scripts build theme/blocks/animated-box/index.js --output-path=theme/blocks/animated-box/build",
+    "blocks:start": "wp-scripts start theme/blocks/animated-box/index.js --output-path=theme/blocks/animated-box/build"
   },
   "devDependencies": {
     "@fullhuman/postcss-purgecss": "^5.0.0",
+    "@wordpress/scripts": "^30.21.0",
     "animate.css": "^4.1.1",
     "autoprefixer": "^10.4.0",
     "bootstrap": "^5.3.2",
