@@ -38,6 +38,8 @@ function fortiveax_default_options() {
         'schema_service'   => 1,
         'high_contrast'    => 0,
         'import_export'    => '',
+        'woo_layout'       => 'grid',
+        'woo_products_per_row' => 3,
     );
 }
 
@@ -91,6 +93,7 @@ function fortiveax_settings_init() {
         'seo'           => __( 'SEO', 'fortiveax' ),
         'accessibility' => __( 'Accessibility', 'fortiveax' ),
         'import'        => __( 'Import/Export', 'fortiveax' ),
+        'woocommerce'   => __( 'WooCommerce', 'fortiveax' ),
     );
 
     foreach ( $sections as $id => $title ) {
@@ -153,6 +156,20 @@ function fortiveax_settings_init() {
     // Blog.
     add_settings_field( 'posts_per_page', __( 'Posts Per Page', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_blog', 'fortiveax_blog_section', array(
         'label_for' => 'posts_per_page',
+        'type'      => 'number',
+    ) );
+
+    // WooCommerce.
+    add_settings_field( 'woo_layout', __( 'Product Layout', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_woocommerce', 'fortiveax_woocommerce_section', array(
+        'label_for' => 'woo_layout',
+        'type'      => 'select',
+        'options'   => array(
+            'grid' => __( 'Grid', 'fortiveax' ),
+            'list' => __( 'List', 'fortiveax' ),
+        ),
+    ) );
+    add_settings_field( 'woo_products_per_row', __( 'Products Per Row', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_woocommerce', 'fortiveax_woocommerce_section', array(
+        'label_for' => 'woo_products_per_row',
         'type'      => 'number',
     ) );
 
@@ -302,6 +319,13 @@ function fortiveax_field_cb( $args ) {
                 esc_attr( $value )
             );
             break;
+        case 'select':
+            echo '<select id="' . esc_attr( $key ) . '" name="fortiveax_options[' . esc_attr( $key ) . ']">';
+            foreach ( $args['options'] as $option_value => $option_label ) {
+                printf( '<option value="%1$s" %2$s>%3$s</option>', esc_attr( $option_value ), selected( $value, $option_value, false ), esc_html( $option_label ) );
+            }
+            echo '</select>';
+            break;
         case 'color':
             printf(
                 '<input type="text" class="fortiveax-color-picker" id="%1$s" name="fortiveax_options[%1$s]" value="%2$s" />',
@@ -368,6 +392,7 @@ function fortiveax_options_page_html() {
         'seo'           => __( 'SEO', 'fortiveax' ),
         'accessibility' => __( 'Accessibility', 'fortiveax' ),
         'import'        => __( 'Import/Export', 'fortiveax' ),
+        'woocommerce'   => __( 'WooCommerce', 'fortiveax' ),
     );
 
     $active_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'branding';

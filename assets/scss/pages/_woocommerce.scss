@@ -1,0 +1,56 @@
+/* stylelint-disable */
+/* WooCommerce styles for FortiveaX theme */
+.woocommerce ul.products {
+  display: grid;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+}
+.woocommerce ul.products li.product {
+  list-style: none;
+  background: var(--bs-body-bg);
+  border: 1px solid var(--color-light);
+  padding: 1rem;
+  text-align: center;
+}
+.woocommerce ul.products li.product .button {
+  background-color: var(--color-primary);
+  color: var(--color-light);
+  padding: 0.5rem 1rem;
+}
+.header-cart {
+  position: relative;
+}
+.header-cart .cart-contents {
+  color: var(--color-dark);
+  text-decoration: none;
+}
+.header-cart .count {
+  background: var(--color-primary);
+  color: var(--color-light);
+  border-radius: 50%;
+  padding: 0 0.4rem;
+  margin-left: 0.3rem;
+}
+.header-cart .widget_shopping_cart {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: var(--bs-body-bg);
+  padding: 1rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  width: 300px;
+  z-index: 99;
+}
+.header-cart:hover .widget_shopping_cart {
+  display: block;
+}
+.woo-layout-list ul.products {
+  display: block;
+}
+.woo-layout-list ul.products li.product {
+  display: flex;
+  gap: 1rem;
+  text-align: left;
+}

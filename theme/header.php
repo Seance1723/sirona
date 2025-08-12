@@ -87,6 +87,9 @@ $logo_dark  = fxo( 'logo_dark', $logo );
         <button class="search-toggle" aria-controls="search-modal" aria-expanded="false">
             <?php esc_html_e( 'Search', 'fortiveax' ); ?>
         </button>
+        <?php if ( class_exists( 'WooCommerce' ) ) : ?>
+            <?php fortiveax_header_cart(); ?>
+        <?php endif; ?>
     </div>
 </header>
 <div id="mobile-menu" class="mobile-menu off-canvas" aria-hidden="true">
