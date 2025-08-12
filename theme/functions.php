@@ -76,3 +76,4 @@ function fortiveax_enqueue_assets() {
     }
 }
 add_action( 'wp_enqueue_scripts', 'fortiveax_enqueue_assets' );
+require_once get_template_directory() . '/inc/options.php';
