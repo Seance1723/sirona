@@ -29,6 +29,13 @@ function fortiveax_default_options() {
         'google_analytics' => '',
         'lazy_load'        => 1,
         'meta_description' => '',
+        'og_image'         => '',
+        'twitter_handle'   => '',
+        'schema_org'       => 1,
+        'schema_breadcrumb'=> 1,
+        'schema_article'   => 1,
+        'schema_faq'       => 1,
+        'schema_service'   => 1,
         'high_contrast'    => 0,
         'import_export'    => '',
     );
@@ -172,6 +179,34 @@ function fortiveax_settings_init() {
         'label_for' => 'meta_description',
         'type'      => 'text',
     ) );
+    add_settings_field( 'og_image', __( 'Default OG Image URL', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_seo', 'fortiveax_seo_section', array(
+        'label_for' => 'og_image',
+        'type'      => 'text',
+    ) );
+    add_settings_field( 'twitter_handle', __( 'Twitter Handle', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_seo', 'fortiveax_seo_section', array(
+        'label_for' => 'twitter_handle',
+        'type'      => 'text',
+    ) );
+    add_settings_field( 'schema_org', __( 'Enable Organization Schema', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_seo', 'fortiveax_seo_section', array(
+        'label_for' => 'schema_org',
+        'type'      => 'checkbox',
+    ) );
+    add_settings_field( 'schema_breadcrumb', __( 'Enable Breadcrumb Schema', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_seo', 'fortiveax_seo_section', array(
+        'label_for' => 'schema_breadcrumb',
+        'type'      => 'checkbox',
+    ) );
+    add_settings_field( 'schema_article', __( 'Enable Article Schema', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_seo', 'fortiveax_seo_section', array(
+        'label_for' => 'schema_article',
+        'type'      => 'checkbox',
+    ) );
+    add_settings_field( 'schema_faq', __( 'Enable FAQ Schema', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_seo', 'fortiveax_seo_section', array(
+        'label_for' => 'schema_faq',
+        'type'      => 'checkbox',
+    ) );
+    add_settings_field( 'schema_service', __( 'Enable Service Schema', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_seo', 'fortiveax_seo_section', array(
+        'label_for' => 'schema_service',
+        'type'      => 'checkbox',
+    ) );
 
     // Accessibility.
     add_settings_field( 'high_contrast', __( 'Enable High Contrast', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_accessibility', 'fortiveax_accessibility_section', array(
@@ -205,6 +240,11 @@ function fortiveax_sanitize_options( $input ) {
             case 'header_sticky':
             case 'show_hero':
             case 'lazy_load':
+            case 'schema_org':
+            case 'schema_breadcrumb':
+            case 'schema_article':
+            case 'schema_faq':
+            case 'schema_service':
             case 'high_contrast':
                 $output[ $key ] = isset( $input[ $key ] ) ? 1 : 0;
                 break;
@@ -215,6 +255,12 @@ function fortiveax_sanitize_options( $input ) {
             case 'primary_color':
                 $color            = isset( $input[ $key ] ) ? sanitize_hex_color( $input[ $key ] ) : '';
                 $output[ $key ]   = $color ? $color : $default;
+                break;
+            case 'og_image':
+                $output[ $key ] = isset( $input[ $key ] ) ? esc_url_raw( $input[ $key ] ) : $default;
+                break;
+            case 'twitter_handle':
+                $output[ $key ] = isset( $input[ $key ] ) ? sanitize_text_field( $input[ $key ] ) : $default;
                 break;
             case 'import_export':
                 $output[ $key ] = isset( $input[ $key ] ) ? sanitize_textarea_field( $input[ $key ] ) : $default;
