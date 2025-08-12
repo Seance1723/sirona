@@ -76,6 +76,7 @@ $logo_dark  = fxo( 'logo_dark', $logo );
                         'theme_location' => 'primary',
                         'menu_id'        => 'primary-menu',
                         'container'      => false,
+                        'walker'         => new FortiveaX_Mega_Menu_Walker(),
                     )
                 );
                 ?>

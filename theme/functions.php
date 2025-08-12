@@ -66,8 +66,8 @@ function fortiveax_enqueue_assets() {
         wp_enqueue_script( 'gsap-scrolltrigger', "$dist_uri/ScrollTrigger.min.js", array( 'gsap' ), filemtime( "$dist_path/ScrollTrigger.min.js" ), true );
     }
 
-    if ( file_exists( "$dist_path/theme.min.js" ) ) {
-        wp_enqueue_script( 'fortiveax-theme', "$dist_uri/theme.min.js", array( 'gsap', 'gsap-scrolltrigger' ), filemtime( "$dist_path/theme.min.js" ), true );
+    if ( file_exists( "$dist_path/main.js" ) ) {
+        wp_enqueue_script( 'fortiveax-theme', "$dist_uri/main.js", array( 'gsap', 'gsap-scrolltrigger' ), filemtime( "$dist_path/main.js" ), true );
 
         $theme_options = array(
             'colors' => array(
@@ -79,9 +79,7 @@ function fortiveax_enqueue_assets() {
         );
         wp_localize_script( 'fortiveax-theme', 'fortiveaX', $theme_options );
     }
-    if ( file_exists( "$dist_path/navigation.js" ) ) {
-        wp_enqueue_script( 'fortiveax-navigation', "$dist_uri/navigation.js", array(), filemtime( "$dist_path/navigation.js" ), true );
-    }
+    
 }
 
 /**
@@ -126,4 +124,8 @@ require_once get_theme_file_path( 'inc/tgm/register-plugins.php' );
 require_once get_theme_file_path( 'inc/admin/rest-dashboard.php' );
 if ( is_admin() ) {
     require_once get_theme_file_path( 'inc/admin/dashboard.php' );
+}
+require_once get_theme_file_path( 'inc/mega-menu/walker.php' );
+if ( is_admin() ) {
+    require_once get_theme_file_path( 'inc/mega-menu/meta.php' );
 }

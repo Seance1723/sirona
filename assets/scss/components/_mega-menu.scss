@@ -1,0 +1,43 @@
+.fx-mega {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  display: none;
+  width: 100%;
+  padding: 1rem;
+  background-color: var(--fx-mega-bg, #fff);
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: 99;
+
+  &.is-open {
+    display: flex;
+  }
+
+  ul.sub-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    width: 100%;
+  }
+
+  .fx-col {
+    flex: 1 1 0;
+    padding: 0 1rem;
+  }
+
+  &.fx-cols-2 .fx-col { flex: 0 0 50%; }
+
+  &.fx-cols-3 .fx-col { flex: 0 0 33.333%; }
+
+  &.fx-cols-4 .fx-col { flex: 0 0 25%; }
+
+  &.fx-cols-5 .fx-col { flex: 0 0 20%; }
+
+  &.fx-cols-6 .fx-col { flex: 0 0 16.666%; }
+}
+
+.menu-item-has-mega {
+  position: static;
+}
