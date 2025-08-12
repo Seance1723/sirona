@@ -5,6 +5,8 @@
  * @package FortiveaX
  */
 ?>
+<?php if ( function_exists( 'fx_hf_render_footer' ) && fx_hf_render_footer() ) : ?>
+<?php else : ?>
 <footer class="site-footer">
     <?php if ( has_nav_menu( 'footer' ) ) : ?>
         <nav class="footer-navigation" aria-label="<?php esc_attr_e( 'Footer menu', 'fortiveax' ); ?>">
@@ -56,6 +58,7 @@
         ?>
     </p>
 </footer>
+<?php endif; ?>
 <?php wp_footer(); ?>
 </body>
 </html>

@@ -16,28 +16,18 @@
 <?php wp_body_open(); ?>
 <a class="skip-link" href="#primary"><?php esc_html_e( 'Skip to content', 'fortiveax' ); ?></a>
 <?php
-$header_classes = array( 'site-header' );
-if ( fxo( 'header_sticky' ) ) {
-    $header_classes[] = 'is-sticky';
-}
-if ( is_front_page() && fxo( 'show_hero', 1 ) ) {
-    $header_classes[] = 'is-transparent';
-}
-$header_class = implode( ' ', array_map( 'sanitize_html_class', $header_classes ) );
-$logo       = fxo( 'logo' );
-$logo_dark  = fxo( 'logo_dark', $logo );
-?>
-<?php
-$header_classes = array( 'site-header' );
-if ( fxo( 'header_sticky' ) ) {
-    $header_classes[] = 'is-sticky';
-}
-if ( is_front_page() && fxo( 'show_hero', 1 ) ) {
-    $header_classes[] = 'is-transparent';
-}
-$header_class = implode( ' ', array_map( 'sanitize_html_class', $header_classes ) );
-$logo       = fxo( 'logo' );
-$logo_dark  = fxo( 'logo_dark', $logo );
+$header_rendered = function_exists( 'fx_hf_render_header' ) && fx_hf_render_header();
+if ( ! $header_rendered ) :
+    $header_classes = array( 'site-header' );
+    if ( fxo( 'header_sticky' ) ) {
+        $header_classes[] = 'is-sticky';
+    }
+    if ( is_front_page() && fxo( 'show_hero', 1 ) ) {
+        $header_classes[] = 'is-transparent';
+    }
+    $header_class = implode( ' ', array_map( 'sanitize_html_class', $header_classes ) );
+    $logo       = fxo( 'logo' );
+    $logo_dark  = fxo( 'logo_dark', $logo );
 ?>
 <header class="<?php echo esc_attr( $header_class ); ?>">
     <div class="header-inner">
@@ -93,6 +83,7 @@ $logo_dark  = fxo( 'logo_dark', $logo );
         <?php endif; ?>
     </div>
 </header>
+<?php endif; ?>
 <div id="mobile-menu" class="mobile-menu off-canvas" aria-hidden="true">
     <button class="close-menu" aria-label="<?php esc_attr_e( 'Close menu', 'fortiveax' ); ?>">&times;</button>
     <?php
