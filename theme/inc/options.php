@@ -237,31 +237,52 @@ function fortiveax_sanitize_options( $input ) {
  */
 function fortiveax_field_cb( $args ) {
     $options = get_option( 'fortiveax_options', fortiveax_default_options() );
-    the $key     = $args['label_for'];
+    $key     = $args['label_for'];
     $type    = isset( $args['type'] ) ? $args['type'] : 'text';
     $value   = isset( $options[ $key ] ) ? $options[ $key ] : '';
 
     switch ( $type ) {
         case 'checkbox':
-            printf( '<input type="checkbox" id="%1$s" name="fortiveax_options[%1$s]" value="1" %2$s />', esc_attr( $key ), checked( $value, 1, false ) );
+            printf(
+                '<input type="checkbox" id="%1$s" name="fortiveax_options[%1$s]" value="1" %2$s />',
+                esc_attr( $key ),
+                checked( $value, 1, false )
+            );
             break;
         case 'number':
-            printf( '<input type="number" id="%1$s" name="fortiveax_options[%1$s]" value="%2$s" class="small-text" />', esc_attr( $key ), esc_attr( $value ) );
+            printf(
+                '<input type="number" id="%1$s" name="fortiveax_options[%1$s]" value="%2$s" class="small-text" />',
+                esc_attr( $key ),
+                esc_attr( $value )
+            );
             break;
         case 'color':
-            printf( '<input type="text" class="fortiveax-color-picker" id="%1$s" name="fortiveax_options[%1$s]" value="%2$s" />', esc_attr( $key ), esc_attr( $value ) );
+            printf(
+                '<input type="text" class="fortiveax-color-picker" id="%1$s" name="fortiveax_options[%1$s]" value="%2$s" />',
+                esc_attr( $key ),
+                esc_attr( $value )
+            );
             break;
         case 'textarea':
-            printf( '<textarea id="%1$s" name="fortiveax_options[%1$s]" rows="5" cols="50">%2$s</textarea>', esc_attr( $key ), esc_textarea( $value ) );
+            printf(
+                '<textarea id="%1$s" name="fortiveax_options[%1$s]" rows="5" cols="50">%2$s</textarea>',
+                esc_attr( $key ),
+                esc_textarea( $value )
+            );
             break;
         default:
-            printf( '<input type="text" id="%1$s" name="fortiveax_options[%1$s]" value="%2$s" class="regular-text" />', esc_attr( $key ), esc_attr( $value ) );
+            printf(
+                '<input type="text" id="%1$s" name="fortiveax_options[%1$s]" value="%2$s" class="regular-text" />',
+                esc_attr( $key ),
+                esc_attr( $value )
+            );
     }
 
     if ( ! empty( $args['description'] ) ) {
         printf( '<p class="description">%s</p>', esc_html( $args['description'] ) );
     }
 }
+
 
 /**
  * Enqueue admin scripts for color picker.
