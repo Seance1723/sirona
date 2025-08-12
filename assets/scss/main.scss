@@ -6,7 +6,9 @@
 @import "themes/dark";
 @import "vendors/bootstrap";
 @import "base/helpers";
+@import "base/typography";
+@import "base/motion";
 @import "layout/header";
 @import "components/buttons";
+@import "components/skip-link";
 @import "pages/home";
-@import "pages/contact";

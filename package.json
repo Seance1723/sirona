@@ -10,6 +10,7 @@
     "lint:js": "eslint assets/js",
     "lint:css": "stylelint 'assets/scss/**/*.scss'",
     "lint": "npm run lint:js && npm run lint:css",
+    "critical": "critical --base theme --src index.php --css theme/dist/style.css --width 1200 --height 900 --target theme/dist/critical.css",
     "blocks:build": "wp-scripts build theme/blocks/animated-box/index.js --output-path=theme/blocks/animated-box/build",
     "blocks:start": "wp-scripts start theme/blocks/animated-box/index.js --output-path=theme/blocks/animated-box/build"
   },
@@ -22,6 +23,7 @@
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^8.0.0",
     "gsap": "^3.13.0",
+    "critical": "^5.2.1",
     "prettier": "^2.0.0",
     "sass": "^1.0.0",
     "stylelint": "^16.0.0",

@@ -1,10 +1,10 @@
 import { initAnimations } from './animations';
-import { initContactForm } from './contact';
+import { initNavigation } from './navigation';
 import 'animate.css';
 
 console.log('FortiveaX theme loaded');
 
 document.addEventListener('DOMContentLoaded', () => {
   initAnimations();
-  initContactForm();
+  initNavigation();
 });

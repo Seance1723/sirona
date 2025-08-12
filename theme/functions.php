@@ -79,7 +79,41 @@ function fortiveax_enqueue_assets() {
         );
         wp_localize_script( 'fortiveax-theme', 'fortiveaX', $theme_options );
     }
+    if ( file_exists( "$dist_path/navigation.js" ) ) {
+        wp_enqueue_script( 'fortiveax-navigation', "$dist_uri/navigation.js", array(), filemtime( "$dist_path/navigation.js" ), true );
+    }
 }
+
+/**
+ * Lazy-load all images by default.
+ */
+add_filter( 'wp_get_attachment_image_attributes', function ( $attr ) {
+    if ( empty( $attr['loading'] ) ) {
+        $attr['loading'] = 'lazy';
+    }
+    return $attr;
+} );
+
+add_filter( 'embed_oembed_html', function ( $html ) {
+    if ( strpos( $html, '<iframe' ) !== false && strpos( $html, 'loading=' ) === false ) {
+        $html = str_replace( '<iframe', '<iframe loading="lazy"', $html );
+    }
+    return $html;
+} );
+
+/**
+ * Preload primary font and inline critical CSS.
+ */
+function fortiveax_preload_assets() {
+    $dist_uri = get_template_directory_uri() . '/dist';
+    $font     = $dist_uri . '/fonts/Inter-Regular.woff2';
+    echo '<link rel="preload" href="' . esc_url( $font ) . '" as="font" type="font/woff2" crossorigin>' . "\n";
+    $critical = get_template_directory() . '/dist/critical.css';
+    if ( file_exists( $critical ) ) {
+        echo '<style id="critical-css">' . file_get_contents( $critical ) . '</style>' . "\n";
+    }
+}
+
 add_action( 'wp_enqueue_scripts', 'fortiveax_enqueue_assets' );
 require_once get_template_directory() . '/inc/options.php';
 require_once get_template_directory() . '/inc/custom-post-types.php';

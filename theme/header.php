@@ -14,6 +14,7 @@
 </head>
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
+<a class="skip-link" href="#primary"><?php esc_html_e( 'Skip to content', 'fortiveax' ); ?></a>
 <?php
 $header_classes = array( 'site-header' );
 if ( fxo( 'header_sticky' ) ) {
@@ -43,9 +44,9 @@ $logo_dark  = fxo( 'logo_dark', $logo );
         <div class="site-branding">
             <?php if ( $logo ) : ?>
                 <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="custom-logo-link">
-                    <img class="logo-light" src="<?php echo esc_url( $logo ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" />
+                    <img class="logo-light" src="<?php echo esc_url( $logo ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" loading="lazy" />
                     <?php if ( $logo_dark ) : ?>
-                        <img class="logo-dark" src="<?php echo esc_url( $logo_dark ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" />
+                        <img class="logo-dark" src="<?php echo esc_url( $logo_dark ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" loading="lazy" />
                     <?php endif; ?>
                 </a>
             <?php elseif ( has_custom_logo() ) : ?>
@@ -88,31 +89,6 @@ $logo_dark  = fxo( 'logo_dark', $logo );
         </button>
     </div>
 </header>
-<div id="mobile-menu" class="mobile-menu off-canvas" aria-hidden="true">
-    <button class="close-menu" aria-label="<?php esc_attr_e( 'Close menu', 'fortiveax' ); ?>">&times;</button>
-    <?php
-    wp_nav_menu(
-        array(
-            'theme_location' => 'primary',
-            'menu_id'        => 'mobile-menu-list',
-            'container'      => false,
-        )
-    );
-    if ( has_nav_menu( 'secondary' ) ) {
-        wp_nav_menu(
-            array(
-                'theme_location' => 'secondary',
-                'menu_id'        => 'mobile-secondary-menu',
-                'container'      => false,
-            )
-        );
-    }
-    ?>
-</div>
-<div id="search-modal" class="search-modal" aria-hidden="true">
-    <button class="close-search" aria-label="<?php esc_attr_e( 'Close search', 'fortiveax' ); ?>">&times;</button>
-    <?php get_search_form(); ?>
-</div>
 <div id="mobile-menu" class="mobile-menu off-canvas" aria-hidden="true">
     <button class="close-menu" aria-label="<?php esc_attr_e( 'Close menu', 'fortiveax' ); ?>">&times;</button>
     <?php
