@@ -122,3 +122,4 @@ require_once get_template_directory() . '/inc/seo.php';
 require_once get_template_directory() . '/inc/contact-form.php';
 require_once get_template_directory() . '/inc/demo-importer.php';
 require_once get_template_directory() . '/inc/woocommerce.php';
+require_once get_theme_file_path( 'inc/tgm/register-plugins.php' );
