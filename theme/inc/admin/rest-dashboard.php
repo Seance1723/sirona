@@ -12,45 +12,45 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Register dashboard REST routes.
  */
-function fortiveax_dashboard_rest_routes() {
+function fx_dashboard_rest_routes() {
     register_rest_route(
-        'fortiveax/v1',
+        'fx/v1',
         '/status',
         array(
             'methods'             => 'GET',
-            'callback'            => 'fortiveax_rest_get_status',
-            'permission_callback' => 'fortiveax_dashboard_rest_permission',
+            'callback'            => 'fx_rest_get_status',
+            'permission_callback' => 'fx_dashboard_rest_permission',
         )
     );
 
     register_rest_route(
-        'fortiveax/v1',
+        'fx/v1',
         '/changelog',
         array(
             'methods'             => 'GET',
-            'callback'            => 'fortiveax_rest_get_changelog',
-            'permission_callback' => 'fortiveax_dashboard_rest_permission',
+            'callback'            => 'fx_rest_get_changelog',
+            'permission_callback' => 'fx_dashboard_rest_permission',
         )
     );
 
     register_rest_route(
-        'fortiveax/v1',
+        'fx/v1',
         '/plugins',
         array(
             'methods'             => 'GET',
-            'callback'            => 'fortiveax_rest_get_plugins',
-            'permission_callback' => 'fortiveax_dashboard_rest_permission',
+            'callback'            => 'fx_rest_get_plugins',
+            'permission_callback' => 'fx_dashboard_rest_permission',
         )
     );
 }
-add_action( 'rest_api_init', 'fortiveax_dashboard_rest_routes' );
+add_action( 'rest_api_init', 'fx_dashboard_rest_routes' );
 
 /**
  * Permission check for dashboard routes.
  *
  * @return bool
  */
-function fortiveax_dashboard_rest_permission() {
+function fx_dashboard_rest_permission() {
     return current_user_can( 'manage_options' );
 }
 
@@ -59,7 +59,7 @@ function fortiveax_dashboard_rest_permission() {
  *
  * @return array
  */
-function fortiveax_rest_get_status() {
+function fx_rest_get_status() {
     $upload_dir = wp_get_upload_dir();
 
     return array(
@@ -77,9 +77,9 @@ function fortiveax_rest_get_status() {
  *
  * @return array
  */
-function fortiveax_rest_get_changelog() {
+function fx_rest_get_changelog() {
     $file     = get_theme_file_path( '/CHANGELOG.md' );
-    $contents = __( 'Changelog not available.', 'fortiveax' );
+    $contents = __( 'Changelog not available.', 'fx' );
 
     if ( file_exists( $file ) ) {
         $contents = file_get_contents( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
@@ -95,7 +95,7 @@ function fortiveax_rest_get_changelog() {
  *
  * @return array
  */
-function fortiveax_rest_get_plugins() {
+function fx_rest_get_plugins() {
     if ( ! class_exists( 'TGM_Plugin_Activation' ) ) {
         return array( 'plugins' => array() );
     }

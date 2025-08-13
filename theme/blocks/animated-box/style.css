@@ -1,10 +1,10 @@
-.fortiveax-hide-desktop { display: none; }
+.fx-hide-desktop { display: none; }
 @media (max-width: 1024px) {
-  .fortiveax-hide-desktop { display: block; }
+  .fx-hide-desktop { display: block; }
 }
 @media (min-width: 768px) and (max-width: 1024px) {
-  .fortiveax-hide-tablet { display: none; }
+  .fx-hide-tablet { display: none; }
 }
 @media (max-width: 767px) {
-  .fortiveax-hide-mobile { display: none; }
+  .fx-hide-mobile { display: none; }
 }

@@ -17,9 +17,9 @@ while ( have_posts() ) :
 endwhile; // end of the loop.
 
 ?>
-<div id="woo-sticky-bar" class="woo-sticky-bar" hidden>
-    <div class="woo-sticky-bar__inner">
-        <span class="woo-sticky-bar__title"><?php the_title(); ?></span>
+<div id="fx-woo-sticky-bar" class="fx-woo-sticky-bar" hidden>
+    <div class="fx-woo-sticky-bar__inner">
+        <span class="fx-woo-sticky-bar__title"><?php the_title(); ?></span>
         <?php woocommerce_template_single_add_to_cart(); ?>
     </div>
 </div>

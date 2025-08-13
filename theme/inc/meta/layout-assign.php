@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function fx_layout_assign_meta_box() {
     add_meta_box(
         'fx-layout-assign',
-        __( 'Layout Assignment', 'fortiveax' ),
+        __( 'Layout Assignment', 'fx' ),
         'fx_layout_assign_meta_box_cb',
         array( 'page', 'post' ),
         'side'
@@ -34,16 +34,16 @@ function fx_layout_assign_meta_box_cb( $post ) {
     $headers = fx_hf_get_layouts( 'header' );
     $footers = fx_hf_get_layouts( 'footer' );
     wp_nonce_field( 'fx_layout_assign_save', 'fx_layout_assign_nonce' );
-    echo '<p><label for="fx_header_variant">' . esc_html__( 'Header Variant', 'fortiveax' ) . '</label><br/>';
+    echo '<p><label for="fx_header_variant">' . esc_html__( 'Header Variant', 'fx' ) . '</label><br/>';
     echo '<select name="fx_header_variant" id="fx_header_variant">';
-    echo '<option value="">' . esc_html__( 'Default', 'fortiveax' ) . '</option>';
+    echo '<option value="">' . esc_html__( 'Default', 'fx' ) . '</option>';
     foreach ( $headers as $slug => $data ) {
         printf( '<option value="%s"%s>%s</option>', esc_attr( $slug ), selected( $header, $slug, false ), esc_html( $data['label'] ) );
     }
     echo '</select></p>';
-    echo '<p><label for="fx_footer_variant">' . esc_html__( 'Footer Variant', 'fortiveax' ) . '</label><br/>';
+    echo '<p><label for="fx_footer_variant">' . esc_html__( 'Footer Variant', 'fx' ) . '</label><br/>';
     echo '<select name="fx_footer_variant" id="fx_footer_variant">';
-    echo '<option value="">' . esc_html__( 'Default', 'fortiveax' ) . '</option>';
+    echo '<option value="">' . esc_html__( 'Default', 'fx' ) . '</option>';
     foreach ( $footers as $slug => $data ) {
         printf( '<option value="%s"%s>%s</option>', esc_attr( $slug ), selected( $footer, $slug, false ), esc_html( $data['label'] ) );
     }

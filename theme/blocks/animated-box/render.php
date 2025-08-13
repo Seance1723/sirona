@@ -1,14 +1,14 @@
 <?php
-function fortiveax_render_animated_box( $attributes, $content ) {
+function fx_render_animated_box( $attributes, $content ) {
     $classes = '';
     if ( ! empty( $attributes['hideDesktop'] ) ) {
-        $classes .= ' fortiveax-hide-desktop';
+        $classes .= ' fx-hide-desktop';
     }
     if ( ! empty( $attributes['hideTablet'] ) ) {
-        $classes .= ' fortiveax-hide-tablet';
+        $classes .= ' fx-hide-tablet';
     }
     if ( ! empty( $attributes['hideMobile'] ) ) {
-        $classes .= ' fortiveax-hide-mobile';
+        $classes .= ' fx-hide-mobile';
     }
 
     $animation = isset( $attributes['animation'] ) ? $attributes['animation'] : 'none';

@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 do_action( 'woocommerce_before_mini_cart' );
 ?>
-<div class="mini-cart-panel<?php echo fxo( 'woo_offcanvas_cart' ) ? ' is-offcanvas' : ''; ?>">
+<div class="fx-mini-cart-panel<?php echo fx_get_option( 'woo_offcanvas_cart' ) ? ' fx-is-offcanvas' : ''; ?>">
 <ul class="woocommerce-mini-cart cart_list product_list_widget">
     <?php if ( ! WC()->cart->is_empty() ) : ?>
         <?php foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) :
@@ -30,12 +30,12 @@ do_action( 'woocommerce_before_mini_cart' );
             </li>
         <?php endforeach; ?>
     <?php else : ?>
-        <li class="woocommerce-mini-cart__empty-message"><?php esc_html_e( 'No products in the cart.', 'fortiveax' ); ?></li>
+        <li class="woocommerce-mini-cart__empty-message"><?php esc_html_e( 'No products in the cart.', 'fx' ); ?></li>
     <?php endif; ?>
 </ul>
 <?php if ( ! WC()->cart->is_empty() ) : ?>
     <p class="woocommerce-mini-cart__total total">
-        <?php esc_html_e( 'Subtotal', 'fortiveax' ); ?>: <?php echo WC()->cart->get_cart_subtotal(); ?>
+        <?php esc_html_e( 'Subtotal', 'fx' ); ?>: <?php echo WC()->cart->get_cart_subtotal(); ?>
     </p>
     <p class="woocommerce-mini-cart__buttons buttons">
         <?php do_action( 'woocommerce_widget_shopping_cart_buttons' ); ?>

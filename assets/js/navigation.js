@@ -20,15 +20,15 @@ function trapFocus(container, closeCallback) {
 }
 
 export function initNavigation() {
-  const menuToggle = document.querySelector('.menu-toggle');
-  const mobileMenu = document.getElementById('mobile-menu');
-  const closeMenu = mobileMenu?.querySelector('.close-menu');
-  const searchToggle = document.querySelector('.search-toggle');
-  const searchModal = document.getElementById('search-modal');
-  const closeSearch = searchModal?.querySelector('.close-search');
+  const menuToggle = document.querySelector('.fx-menu-toggle');
+  const mobileMenu = document.getElementById('fx-mobile-menu');
+  const closeMenu = mobileMenu?.querySelector('.fx-close-menu');
+  const searchToggle = document.querySelector('.fx-search-toggle');
+  const searchModal = document.getElementById('fx-search-modal');
+  const closeSearch = searchModal?.querySelector('.fx-close-search');
 
   function openMenu() {
-    mobileMenu.classList.add('is-open');
+    mobileMenu.classList.add('fx-is-open');
     mobileMenu.removeAttribute('aria-hidden');
     menuToggle.setAttribute('aria-expanded', 'true');
     const firstLink = mobileMenu.querySelector('a, button');
@@ -36,7 +36,7 @@ export function initNavigation() {
     trapFocus(mobileMenu, closeMenuHandler);
   }
   function closeMenuHandler() {
-    mobileMenu.classList.remove('is-open');
+    mobileMenu.classList.remove('fx-is-open');
     mobileMenu.setAttribute('aria-hidden', 'true');
     menuToggle.setAttribute('aria-expanded', 'false');
     menuToggle.focus();
@@ -52,7 +52,7 @@ export function initNavigation() {
   closeMenu?.addEventListener('click', closeMenuHandler);
 
   function openSearch() {
-    searchModal.classList.add('is-open');
+    searchModal.classList.add('fx-is-open');
     searchModal.removeAttribute('aria-hidden');
     searchToggle.setAttribute('aria-expanded', 'true');
     const input = searchModal.querySelector('input');
@@ -60,7 +60,7 @@ export function initNavigation() {
     trapFocus(searchModal, closeSearchHandler);
   }
   function closeSearchHandler() {
-    searchModal.classList.remove('is-open');
+    searchModal.classList.remove('fx-is-open');
     searchModal.setAttribute('aria-hidden', 'true');
     searchToggle.setAttribute('aria-expanded', 'false');
     searchToggle.focus();

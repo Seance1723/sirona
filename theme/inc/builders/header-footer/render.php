@@ -28,7 +28,7 @@ function fx_hf_render_layout( $type, $variant ) {
     }
 
     $layout = $data['layout'];
-    $break  = fxo( 'mobile_breakpoint', 768 );
+    $break  = fx_get_option( 'mobile_breakpoint', 768 );
 
     $classes = array( "fx-{$type}-layout" );
     if ( ! empty( $layout['sticky'] ) ) {

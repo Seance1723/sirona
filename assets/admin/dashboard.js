@@ -8,14 +8,14 @@
         const [plugins, setPlugins] = useState([]);
 
         useEffect(() => {
-            apiFetch({ path: fortiveaxDashboard.restBase + '/status', headers: { 'X-WP-Nonce': fortiveaxDashboard.nonce } }).then(setStatus);
-            apiFetch({ path: fortiveaxDashboard.restBase + '/changelog', headers: { 'X-WP-Nonce': fortiveaxDashboard.nonce } }).then(res => setChangelog(res.changelog));
-            apiFetch({ path: fortiveaxDashboard.restBase + '/plugins', headers: { 'X-WP-Nonce': fortiveaxDashboard.nonce } }).then(res => setPlugins(res.plugins));
+            apiFetch({ path: fxDashboard.restBase + '/status', headers: { 'X-WP-Nonce': fxDashboard.nonce } }).then(setStatus);
+            apiFetch({ path: fxDashboard.restBase + '/changelog', headers: { 'X-WP-Nonce': fxDashboard.nonce } }).then(res => setChangelog(res.changelog));
+            apiFetch({ path: fxDashboard.restBase + '/plugins', headers: { 'X-WP-Nonce': fxDashboard.nonce } }).then(res => setPlugins(res.plugins));
         }, []);
 
         return createElement(
             'div',
-            { className: 'fortiveax-dashboard-app' },
+            { className: 'fx-dashboard-app' },
             createElement('h2', null, 'System Status'),
             status && createElement(
                 'ul',
@@ -52,24 +52,24 @@
             createElement(
                 'ul',
                 null,
-                createElement('li', null, createElement('a', { href: fortiveaxDashboard.links.themeOptions }, 'Theme Options')),
-                createElement('li', null, createElement('a', { href: fortiveaxDashboard.links.demoImport }, 'Demo Import')),
+                createElement('li', null, createElement('a', { href: fxDashboard.links.themeOptions }, 'Theme Options')),
+                createElement('li', null, createElement('a', { href: fxDashboard.links.demoImport }, 'Demo Import')),
                 createElement(
                     'li',
                     null,
                     createElement(
                         'a',
-                        { href: fortiveaxDashboard.links.setupWizard },
-                        fortiveaxDashboard.wizardComplete ? 'Re-run Wizard' : 'Setup Wizard'
+                        { href: fxDashboard.links.setupWizard },
+                        fxDashboard.wizardComplete ? 'Re-run Wizard' : 'Setup Wizard'
                     )
                 ),
-                createElement('li', null, createElement('a', { href: fortiveaxDashboard.links.docs }, 'Documentation'))
+                createElement('li', null, createElement('a', { href: fxDashboard.links.docs }, 'Documentation'))
             )
         );
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-        const root = document.getElementById('fortiveax-dashboard');
+        const root = document.getElementById('fx-dashboard');
         if (root) {
             render(createElement(DashboardApp), root);
         }

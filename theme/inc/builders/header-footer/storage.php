@@ -71,7 +71,7 @@ function fx_hf_default_presets() {
     return array(
         'header' => array(
             'classic' => array(
-                'label'  => __( 'Classic', 'fortiveax' ),
+                'label'  => __( 'Classic', 'fx' ),
                 'layout' => array(
                     'sticky'      => false,
                     'transparent' => false,
@@ -86,7 +86,7 @@ function fx_hf_default_presets() {
                 ),
             ),
             'centered' => array(
-                'label'  => __( 'Centered', 'fortiveax' ),
+                'label'  => __( 'Centered', 'fx' ),
                 'layout' => array(
                     'sticky'      => false,
                     'transparent' => false,
@@ -105,7 +105,7 @@ function fx_hf_default_presets() {
                 ),
             ),
             'split' => array(
-                'label'  => __( 'Split', 'fortiveax' ),
+                'label'  => __( 'Split', 'fx' ),
                 'layout' => array(
                     'sticky'      => false,
                     'transparent' => false,
@@ -121,7 +121,7 @@ function fx_hf_default_presets() {
                 ),
             ),
             'topbar' => array(
-                'label'  => __( 'Topbar', 'fortiveax' ),
+                'label'  => __( 'Topbar', 'fx' ),
                 'layout' => array(
                     'sticky'      => false,
                     'transparent' => false,
@@ -143,7 +143,7 @@ function fx_hf_default_presets() {
         ),
         'footer' => array(
             'classic' => array(
-                'label'  => __( 'Classic', 'fortiveax' ),
+                'label'  => __( 'Classic', 'fx' ),
                 'layout' => array(
                     'rows' => array(
                         array(

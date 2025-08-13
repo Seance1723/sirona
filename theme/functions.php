@@ -6,7 +6,7 @@
 /**
  * Set up theme supports, menus, and editor styles.
  */
-function fortiveax_setup() {
+function fx_setup() {
     add_theme_support( 'title-tag' );
     add_theme_support( 'post-thumbnails' );
     add_theme_support( 'custom-logo', array(
@@ -17,41 +17,41 @@ function fortiveax_setup() {
     ) );
     register_nav_menus(
         array(
-            'primary'   => __( 'Primary Menu', 'fortiveax' ),
-            'secondary' => __( 'Secondary Menu', 'fortiveax' ),
-            'footer'    => __( 'Footer Menu', 'fortiveax' ),
+            'primary'   => __( 'Primary Menu', 'fx' ),
+            'secondary' => __( 'Secondary Menu', 'fx' ),
+            'footer'    => __( 'Footer Menu', 'fx' ),
         )
     );
     add_theme_support( 'editor-styles' );
-    add_editor_style( 'dist/style.css' );
+    add_editor_style( get_theme_file_uri( 'dist/style.css' ) );
 }
-add_action( 'after_setup_theme', 'fortiveax_setup' );
+add_action( 'after_setup_theme', 'fx_setup' );
 
 /**
  * Register widget areas.
  */
-function fortiveax_widgets_init() {
+function fx_widgets_init() {
     register_sidebar( array(
-        'name'          => __( 'Sidebar', 'fortiveax' ),
+        'name'          => __( 'Sidebar', 'fx' ),
         'id'            => 'sidebar-1',
-        'description'   => __( 'Main sidebar area.', 'fortiveax' ),
+        'description'   => __( 'Main sidebar area.', 'fx' ),
         'before_widget' => '<section id="%1$s" class="widget %2$s">',
         'after_widget'  => '</section>',
         'before_title'  => '<h2 class="widget-title">',
         'after_title'   => '</h2>',
     ) );
 }
-add_action( 'widgets_init', 'fortiveax_widgets_init' );
+add_action( 'widgets_init', 'fx_widgets_init' );
 
 /**
  * Enqueue theme assets.
  */
-function fortiveax_enqueue_assets() {
-    $dist_path = get_template_directory() . '/dist';
-    $dist_uri  = get_template_directory_uri() . '/dist';
+function fx_enqueue_assets() {
+    $dist_path = get_theme_file_path( 'dist' );
+    $dist_uri  = get_theme_file_uri( 'dist' );
 
     if ( file_exists( "$dist_path/style.css" ) ) {
-        wp_enqueue_style( 'fortiveax-style', "$dist_uri/style.css", array(), filemtime( "$dist_path/style.css" ) );
+        wp_enqueue_style( 'fx-style', "$dist_uri/style.css", array(), filemtime( "$dist_path/style.css" ) );
     }
 
     if ( file_exists( "$dist_path/animate.min.css" ) ) {
@@ -67,7 +67,7 @@ function fortiveax_enqueue_assets() {
     }
 
     if ( file_exists( "$dist_path/main.js" ) ) {
-        wp_enqueue_script( 'fortiveax-theme', "$dist_uri/main.js", array( 'gsap', 'gsap-scrolltrigger' ), filemtime( "$dist_path/main.js" ), true );
+        wp_enqueue_script( 'fx-theme', "$dist_uri/main.js", array( 'gsap', 'gsap-scrolltrigger' ), filemtime( "$dist_path/main.js" ), true );
 
         $theme_options = array(
             'colors' => array(
@@ -77,7 +77,7 @@ function fortiveax_enqueue_assets() {
             'toggle'   => (bool) get_theme_mod( 'theme_toggle', true ),
             'ajax_url' => admin_url( 'admin-ajax.php' ),
         );
-        wp_localize_script( 'fortiveax-theme', 'fortiveaX', $theme_options );
+        wp_localize_script( 'fx-theme', 'fxTheme', $theme_options );
     }
     
 }
@@ -85,21 +85,21 @@ function fortiveax_enqueue_assets() {
 /**
  * Preload primary font and inline critical CSS.
  */
-function fortiveax_preload_assets() {
-    $dist_uri = get_template_directory_uri() . '/dist';
+function fx_preload_assets() {
+    $dist_uri = get_theme_file_uri( 'dist' );
     $font     = $dist_uri . '/fonts/Inter-Regular.woff2';
     echo '<link rel="preload" href="' . esc_url( $font ) . '" as="font" type="font/woff2" crossorigin>' . "\n";
-    if ( fxo( 'inline_critical_css' ) ) {
-        $critical = get_template_directory() . '/dist/critical.css';
+    if ( fx_get_option( 'inline_critical_css' ) ) {
+        $critical = get_theme_file_path( 'dist/critical.css' );
         if ( file_exists( $critical ) ) {
             echo '<style id="critical-css">' . file_get_contents( $critical ) . '</style>' . "\n";
         }
     }
 }
 
-add_action( 'wp_head', 'fortiveax_preload_assets' );
+add_action( 'wp_head', 'fx_preload_assets' );
 
-function fortiveax_lazy_images( $attr ) {
+function fx_lazy_images( $attr ) {
     if ( empty( $attr['loading'] ) ) {
         $attr['loading'] = 'lazy';
     }
@@ -113,7 +113,7 @@ function fortiveax_lazy_iframes( $html ) {
     return $html;
 }
 
-function fortiveax_disable_emojis() {
+function fx_disable_emojis() {
     remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
     remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
     remove_action( 'wp_print_styles', 'print_emoji_styles' );
@@ -123,7 +123,7 @@ function fortiveax_disable_emojis() {
     remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
 }
 
-function fortiveax_disable_embeds() {
+function fx_disable_embeds() {
     remove_action( 'wp_head', 'wp_oembed_add_discovery_links' );
     remove_action( 'wp_head', 'wp_oembed_add_host_js' );
     remove_action( 'rest_api_init', 'wp_oembed_register_route' );
@@ -134,14 +134,14 @@ function fortiveax_disable_embeds() {
     } );
 }
 
-function fortiveax_remove_jquery_migrate( $scripts ) {
+function fx_remove_jquery_migrate( $scripts ) {
     if ( ! is_admin() && $scripts->has( 'jquery' ) ) {
         $scripts->remove( 'jquery' );
         $scripts->add( 'jquery', false, array( 'jquery-core' ) );
     }
 }
 
-function fortiveax_parse_script_manager( $raw ) {
+function fx_parse_script_manager( $raw ) {
     $rules = array();
     $lines = array_filter( array_map( 'trim', explode( "\n", $raw ) ) );
     foreach ( $lines as $line ) {
@@ -154,12 +154,12 @@ function fortiveax_parse_script_manager( $raw ) {
     return $rules;
 }
 
-function fortiveax_manage_scripts( $tag, $handle, $src ) {
-    $raw = fxo( 'script_manager', '' );
+function fx_manage_scripts( $tag, $handle, $src ) {
+    $raw = fx_get_option( 'script_manager', '' );
     if ( empty( $raw ) ) {
         return $tag;
     }
-    $rules    = fortiveax_parse_script_manager( $raw );
+    $rules    = fx_parse_script_manager( $raw );
     $template = get_page_template_slug();
     $template = $template ? $template : 'default';
     $mode     = '';
@@ -171,49 +171,49 @@ function fortiveax_manage_scripts( $tag, $handle, $src ) {
     if ( 'disable' === $mode ) {
         return '';
     }
-    if ( 'defer' === $mode && fxo( 'defer_scripts' ) ) {
+    if ( 'defer' === $mode && fx_get_option( 'defer_scripts' ) ) {
         return str_replace( '<script', '<script defer', $tag );
     }
-    if ( 'async' === $mode && fxo( 'async_noncritical' ) ) {
+    if ( 'async' === $mode && fx_get_option( 'async_noncritical' ) ) {
         return str_replace( '<script', '<script async', $tag );
     }
     return $tag;
 }
 
-function fortiveax_performance_setup() {
-    if ( fxo( 'lazy_load' ) ) {
-        add_filter( 'wp_get_attachment_image_attributes', 'fortiveax_lazy_images' );
+function fx_performance_setup() {
+    if ( fx_get_option( 'lazy_load' ) ) {
+        add_filter( 'wp_get_attachment_image_attributes', 'fx_lazy_images' );
     }
-    if ( fxo( 'lazy_iframes' ) ) {
-        add_filter( 'embed_oembed_html', 'fortiveax_lazy_iframes' );
+    if ( fx_get_option( 'lazy_iframes' ) ) {
+        add_filter( 'embed_oembed_html', 'fx_lazy_iframes' );
     }
-    if ( fxo( 'disable_emojis' ) ) {
-        fortiveax_disable_emojis();
+    if ( fx_get_option( 'disable_emojis' ) ) {
+        fx_disable_emojis();
     }
-    if ( fxo( 'disable_embeds' ) ) {
-        fortiveax_disable_embeds();
+    if ( fx_get_option( 'disable_embeds' ) ) {
+        fx_disable_embeds();
     }
-    if ( fxo( 'disable_jquery_migrate' ) ) {
-        add_action( 'wp_default_scripts', 'fortiveax_remove_jquery_migrate' );
+    if ( fx_get_option( 'disable_jquery_migrate' ) ) {
+        add_action( 'wp_default_scripts', 'fx_remove_jquery_migrate' );
     }
-    if ( fxo( 'defer_scripts' ) || fxo( 'async_noncritical' ) || fxo( 'script_manager' ) ) {
-        add_filter( 'script_loader_tag', 'fortiveax_manage_scripts', 10, 3 );
+    if ( fx_get_option( 'defer_scripts' ) || fx_get_option( 'async_noncritical' ) || fx_get_option( 'script_manager' ) ) {
+        add_filter( 'script_loader_tag', 'fx_manage_scripts', 10, 3 );
     }
 }
 
-add_action( 'init', 'fortiveax_performance_setup' );
+add_action( 'init', 'fx_performance_setup' );
 
-add_action( 'wp_enqueue_scripts', 'fortiveax_enqueue_assets' );
-require_once get_template_directory() . '/inc/options.php';
-require_once get_template_directory() . '/inc/custom-post-types.php';
-require_once get_template_directory() . '/inc/blocks.php';
-require_once get_template_directory() . '/inc/blocks-pro/index.php';
-require_once get_template_directory() . '/inc/global-elements/render.php';
-require_once get_template_directory() . '/inc/seo.php';
-require_once get_template_directory() . '/inc/contact-form.php';
-require_once get_template_directory() . '/inc/demo-importer.php';
-require_once get_template_directory() . '/inc/woocommerce.php';
-require_once get_template_directory() . '/inc/woo/setup.php';
+add_action( 'wp_enqueue_scripts', 'fx_enqueue_assets' );
+require_once get_theme_file_path( 'inc/options.php' );
+require_once get_theme_file_path( 'inc/custom-post-types.php' );
+require_once get_theme_file_path( 'inc/blocks.php' );
+require_once get_theme_file_path( 'inc/blocks-pro/index.php' );
+require_once get_theme_file_path( 'inc/global-elements/render.php' );
+require_once get_theme_file_path( 'inc/seo.php' );
+require_once get_theme_file_path( 'inc/contact-form.php' );
+require_once get_theme_file_path( 'inc/demo-importer.php' );
+require_once get_theme_file_path( 'inc/woocommerce.php' );
+require_once get_theme_file_path( 'inc/woo/setup.php' );
 require_once get_theme_file_path( 'inc/tgm/register-plugins.php' );
 require_once get_theme_file_path( 'inc/admin/rest-dashboard.php' );
 require_once get_theme_file_path( 'inc/setup-wizard/wizard.php' );

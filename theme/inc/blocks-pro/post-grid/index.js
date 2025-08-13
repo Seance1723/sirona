@@ -18,7 +18,7 @@ import {
 } from '../utils';
 import './style.scss';
 
-registerBlockType( 'fortiveax/post-grid', {
+registerBlockType( 'fx/post-grid', {
     edit( { attributes, setAttributes } ) {
         const {
             postType,
@@ -51,9 +51,9 @@ registerBlockType( 'fortiveax/post-grid', {
                     setAttributes={ setAttributes }
                 />
                 <InspectorControls>
-                    <PanelBody title={ __( 'Query', 'fortiveax' ) }>
+                    <PanelBody title={ __( 'Query', 'fx' ) }>
                         <SelectControl
-                            label={ __( 'Post Type', 'fortiveax' ) }
+                            label={ __( 'Post Type', 'fx' ) }
                             value={ postType }
                             options={ postTypeOptions }
                             onChange={ ( value ) =>
@@ -61,7 +61,7 @@ registerBlockType( 'fortiveax/post-grid', {
                             }
                         />
                         <RangeControl
-                            label={ __( 'Posts Per Page', 'fortiveax' ) }
+                            label={ __( 'Posts Per Page', 'fx' ) }
                             value={ postsPerPage }
                             onChange={ ( value ) =>
                                 setAttributes( { postsPerPage: value } )
@@ -70,34 +70,34 @@ registerBlockType( 'fortiveax/post-grid', {
                             max={ 20 }
                         />
                         <SelectControl
-                            label={ __( 'Order', 'fortiveax' ) }
+                            label={ __( 'Order', 'fx' ) }
                             value={ order }
                             options={ [
-                                { label: __( 'Ascending', 'fortiveax' ), value: 'ASC' },
-                                { label: __( 'Descending', 'fortiveax' ), value: 'DESC' },
+                                { label: __( 'Ascending', 'fx' ), value: 'ASC' },
+                                { label: __( 'Descending', 'fx' ), value: 'DESC' },
                             ] }
                             onChange={ ( value ) =>
                                 setAttributes( { order: value } )
                             }
                         />
                         <SelectControl
-                            label={ __( 'Order By', 'fortiveax' ) }
+                            label={ __( 'Order By', 'fx' ) }
                             value={ orderBy }
                             options={ [
-                                { label: __( 'Date', 'fortiveax' ), value: 'date' },
-                                { label: __( 'Title', 'fortiveax' ), value: 'title' },
+                                { label: __( 'Date', 'fx' ), value: 'date' },
+                                { label: __( 'Title', 'fx' ), value: 'title' },
                             ] }
                             onChange={ ( value ) =>
                                 setAttributes( { orderBy: value } )
                             }
                         />
                         <SelectControl
-                            label={ __( 'Pagination', 'fortiveax' ) }
+                            label={ __( 'Pagination', 'fx' ) }
                             value={ pagination }
                             options={ [
-                                { label: __( 'None', 'fortiveax' ), value: 'none' },
-                                { label: __( 'Ajax', 'fortiveax' ), value: 'ajax' },
-                                { label: __( 'Infinite Scroll', 'fortiveax' ), value: 'infinite' },
+                                { label: __( 'None', 'fx' ), value: 'none' },
+                                { label: __( 'Ajax', 'fx' ), value: 'ajax' },
+                                { label: __( 'Infinite Scroll', 'fx' ), value: 'infinite' },
                             ] }
                             onChange={ ( value ) =>
                                 setAttributes( { pagination: value } )
@@ -107,7 +107,7 @@ registerBlockType( 'fortiveax/post-grid', {
                 </InspectorControls>
                 <div { ...blockProps }>
                     <ServerSideRender
-                        block="fortiveax/post-grid"
+                        block="fx/post-grid"
                         attributes={ attributes }
                     />
                 </div>

@@ -11,7 +11,7 @@
     function Step({ step, label, status, onRun }) {
         return createElement(
             'div',
-            { className: 'fortiveax-wizard-step' },
+            { className: 'fx-wizard-step' },
             createElement('h3', null, label),
             status === 'done'
                 ? createElement('span', { className: 'status done' }, 'Done')
@@ -33,9 +33,9 @@
         function runStep(step) {
             setState({ ...state, [step]: 'running' });
             apiFetch({
-                path: fortiveaxWizard.restBase + '/wizard/' + step,
+                path: fxWizard.restBase + '/wizard/' + step,
                 method: 'POST',
-                headers: { 'X-WP-Nonce': fortiveaxWizard.nonce },
+                headers: { 'X-WP-Nonce': fxWizard.nonce },
             })
                 .then(() => setState((s) => ({ ...s, [step]: 'done' })))
                 .catch(() => setState((s) => ({ ...s, [step]: 'error' })));
@@ -45,7 +45,7 @@
 
         return createElement(
             'div',
-            { className: 'fortiveax-wizard-app' },
+            { className: 'fx-wizard-app' },
             steps.map((s) =>
                 createElement(Step, {
                     key: s.key,
@@ -60,7 +60,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-        const root = document.getElementById('fortiveax-setup-wizard');
+        const root = document.getElementById('fx-setup-wizard');
         if (root) {
             render(createElement(WizardApp), root);
         }

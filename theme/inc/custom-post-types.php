@@ -2,7 +2,7 @@
 /**
  * Register custom post types for the theme.
  */
-function fortiveax_register_cpts() {
+function fx_register_cpts() {
     $supports   = array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' );
     $taxonomies = array( 'category', 'post_tag' );
 
@@ -10,8 +10,8 @@ function fortiveax_register_cpts() {
         'portfolio',
         array(
             'labels' => array(
-                'name'          => __( 'Portfolios', 'fortiveax' ),
-                'singular_name' => __( 'Portfolio', 'fortiveax' ),
+                'name'          => __( 'Portfolios', 'fx' ),
+                'singular_name' => __( 'Portfolio', 'fx' ),
             ),
             'public'      => true,
             'has_archive' => true,
@@ -25,8 +25,8 @@ function fortiveax_register_cpts() {
         'testimonial',
         array(
             'labels' => array(
-                'name'          => __( 'Testimonials', 'fortiveax' ),
-                'singular_name' => __( 'Testimonial', 'fortiveax' ),
+                'name'          => __( 'Testimonials', 'fx' ),
+                'singular_name' => __( 'Testimonial', 'fx' ),
             ),
             'public'      => true,
             'has_archive' => true,
@@ -40,8 +40,8 @@ function fortiveax_register_cpts() {
         'team',
         array(
             'labels' => array(
-                'name'          => __( 'Team Members', 'fortiveax' ),
-                'singular_name' => __( 'Team Member', 'fortiveax' ),
+                'name'          => __( 'Team Members', 'fx' ),
+                'singular_name' => __( 'Team Member', 'fx' ),
             ),
             'public'      => true,
             'has_archive' => true,
@@ -55,8 +55,8 @@ function fortiveax_register_cpts() {
         'faq',
         array(
             'labels' => array(
-                'name'          => __( 'FAQs', 'fortiveax' ),
-                'singular_name' => __( 'FAQ', 'fortiveax' ),
+                'name'          => __( 'FAQs', 'fx' ),
+                'singular_name' => __( 'FAQ', 'fx' ),
             ),
             'public'      => true,
             'has_archive' => true,
@@ -69,8 +69,8 @@ function fortiveax_register_cpts() {
         'fx_global',
         array(
             'labels' => array(
-                'name'          => __( 'Global Elements', 'fortiveax' ),
-                'singular_name' => __( 'Global Element', 'fortiveax' ),
+                'name'          => __( 'Global Elements', 'fx' ),
+                'singular_name' => __( 'Global Element', 'fx' ),
             ),
             'public'      => false,
             'show_ui'     => true,
@@ -79,4 +79,4 @@ function fortiveax_register_cpts() {
         )
     );
 }
-add_action( 'init', 'fortiveax_register_cpts' );
+add_action( 'init', 'fx_register_cpts' );

@@ -1,5 +1,5 @@
 /**
- * WooCommerce enhancements for Sirona theme.
+ * WooCommerce enhancements for fx theme.
  * Handles ajax add-to-cart, quick view modal, off-canvas cart
  * toggling, infinite scroll and sticky add to cart bar behaviour.
  *
@@ -19,13 +19,13 @@
     }
 
     function initOffCanvasCart() {
-        const panel = doc.querySelector('.mini-cart-panel');
+        const panel = doc.querySelector('.fx-mini-cart-panel');
         if (!panel) return;
         // TODO: open/close handlers for off-canvas cart.
     }
 
     function initStickyBar() {
-        const bar = doc.getElementById('woo-sticky-bar');
+        const bar = doc.getElementById('fx-woo-sticky-bar');
         if (!bar) return;
         // TODO: show bar after scrolling past product summary.
     }

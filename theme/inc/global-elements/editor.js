@@ -12,19 +12,19 @@
     function saveSelection(){
         var clientIds = select('core/block-editor').getSelectedBlockClientIds();
         if(!clientIds.length){
-            alert(__('Select blocks to save.', 'fortiveax'));
+            alert(__('Select blocks to save.', 'fx'));
             return;
         }
         var blocks = select('core/block-editor').getBlocksByClientId(clientIds);
         var content = serialize(blocks);
-        var title = window.prompt(__('Global element title', 'fortiveax'));
+        var title = window.prompt(__('Global element title', 'fx'));
         if(!title){ return; }
         apiFetch({
             path: '/wp/v2/fx_global',
             method: 'POST',
             data: { title: title, content: content, status: 'publish' }
         }).then(function(post){
-            var block = createBlock('fortiveax/global-element', { id: post.id });
+            var block = createBlock('fx/global-element', { id: post.id });
             dispatch('core/block-editor').replaceBlocks(clientIds, block);
         });
     }
@@ -32,7 +32,7 @@
     var SaveButton = function(){
         return element.createElement(PluginToolbarButton, {
             icon: 'admin-site',
-            label: __('Save selection as Global', 'fortiveax'),
+            label: __('Save selection as Global', 'fx'),
             onClick: saveSelection
         });
     };

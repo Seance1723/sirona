@@ -2,7 +2,7 @@
 /**
  * Mega menu walker.
  */
-class FortiveaX_Mega_Menu_Walker extends Walker_Nav_Menu {
+class FX_Mega_Menu_Walker extends Walker_Nav_Menu {
     private $mega_enabled = false;
     private $mega_cols = 0;
     private $mega_styles = '';

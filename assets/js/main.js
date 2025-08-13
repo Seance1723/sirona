@@ -4,8 +4,6 @@ import { initMegaMenu } from './mega-menu';
 import { prefersReducedMotion } from './utils';
 import 'animate.css';
 
-console.log('FortiveaX theme loaded');
-
 document.addEventListener('DOMContentLoaded', () => {
   const loadAnimations = () => initAnimations();
   if (prefersReducedMotion()) {

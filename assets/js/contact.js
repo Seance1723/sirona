@@ -1,7 +1,7 @@
-/* global fortiveaX */
+/* global fxTheme */
 export function initContactForm() {
-  const form = document.getElementById('fortiveax-contact-form');
-  const toast = document.getElementById('fortiveax-contact-toast');
+  const form = document.getElementById('fx-contact-form');
+  const toast = document.getElementById('fx-contact-toast');
   if (!form) {
     return;
   }
@@ -9,10 +9,10 @@ export function initContactForm() {
   const showToast = (message) => {
     if (!toast) return;
     toast.textContent = message;
-    toast.classList.add('visible');
+    toast.classList.add('fx-visible');
     toast.removeAttribute('hidden');
     setTimeout(() => {
-      toast.classList.remove('visible');
+      toast.classList.remove('fx-visible');
       toast.setAttribute('hidden', '');
     }, 3000);
   };
@@ -20,10 +20,10 @@ export function initContactForm() {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(form);
-    formData.append('action', 'fortiveax_contact_submit');
+    formData.append('action', 'fx_contact_submit');
 
     try {
-      const response = await fetch(fortiveaX.ajax_url, {
+      const response = await fetch(fxTheme.ajax_url, {
         method: 'POST',
         body: formData,
       });

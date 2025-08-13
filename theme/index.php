@@ -21,7 +21,7 @@ get_header();
             </article>
         <?php endwhile; ?>
     <?php else : ?>
-        <p><?php esc_html_e( 'No posts found.', 'fortiveax' ); ?></p>
+        <p><?php esc_html_e( 'No posts found.', 'fx' ); ?></p>
     <?php endif; ?>
 </main>
 <?php

@@ -9,7 +9,7 @@
 <?php else : ?>
 <footer class="site-footer">
     <?php if ( has_nav_menu( 'footer' ) ) : ?>
-        <nav class="footer-navigation" aria-label="<?php esc_attr_e( 'Footer menu', 'fortiveax' ); ?>">
+        <nav class="footer-navigation" aria-label="<?php esc_attr_e( 'Footer menu', 'fx' ); ?>">
             <?php
             wp_nav_menu(
                 array(
@@ -22,7 +22,7 @@
         </nav>
     <?php endif; ?>
     <?php
-    $social_links_raw = fxo( 'social_links', '' );
+    $social_links_raw = fx_get_option( 'social_links', '' );
     $social_links     = array();
     if ( ! empty( $social_links_raw ) ) {
         $lines = array_map( 'trim', explode( "\n", $social_links_raw ) );
@@ -49,7 +49,7 @@
     <?php endif; ?>
     <p class="site-info">
         <?php
-        $footer_text = fxo( 'footer_text', '' );
+        $footer_text = fx_get_option( 'footer_text', '' );
         if ( ! empty( $footer_text ) ) {
             echo wp_kses_post( $footer_text );
         } else {

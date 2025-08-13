@@ -4,7 +4,7 @@
  */
 
 // Display custom fields in menu item editor.
-function fortiveax_megamenu_fields( $item_id, $item ) {
+function fx_megamenu_fields( $item_id, $item ) {
     $enabled   = get_post_meta( $item_id, '_fx_mega_enabled', true );
     $cols      = get_post_meta( $item_id, '_fx_mega_cols', true );
     $bg_color  = get_post_meta( $item_id, '_fx_mega_bg_color', true );
@@ -15,12 +15,12 @@ function fortiveax_megamenu_fields( $item_id, $item ) {
     <p class="field-enable-mega description description-wide">
         <label for="edit-fx-mega-enabled-<?php echo esc_attr( $item_id ); ?>">
             <input type="checkbox" id="edit-fx-mega-enabled-<?php echo esc_attr( $item_id ); ?>" name="fx_mega_enabled[<?php echo esc_attr( $item_id ); ?>]" value="1" <?php checked( $enabled, '1' ); ?> />
-            <?php esc_html_e( 'Enable Mega Menu', 'fortiveax' ); ?>
+            <?php esc_html_e( 'Enable Mega Menu', 'fx' ); ?>
         </label>
     </p>
     <p class="field-mega-cols description description-wide">
         <label for="edit-fx-mega-cols-<?php echo esc_attr( $item_id ); ?>">
-            <?php esc_html_e( 'Columns', 'fortiveax' ); ?>
+            <?php esc_html_e( 'Columns', 'fx' ); ?>
             <select id="edit-fx-mega-cols-<?php echo esc_attr( $item_id ); ?>" name="fx_mega_cols[<?php echo esc_attr( $item_id ); ?>]">
                 <?php for ( $i = 2; $i <= 6; $i++ ) : ?>
                     <option value="<?php echo esc_attr( $i ); ?>" <?php selected( $cols, $i ); ?>><?php echo esc_html( $i ); ?></option>
@@ -30,34 +30,34 @@ function fortiveax_megamenu_fields( $item_id, $item ) {
     </p>
     <p class="field-mega-bg-color description description-wide">
         <label for="edit-fx-mega-bg-color-<?php echo esc_attr( $item_id ); ?>">
-            <?php esc_html_e( 'Background Color', 'fortiveax' ); ?>
+            <?php esc_html_e( 'Background Color', 'fx' ); ?>
             <input type="text" id="edit-fx-mega-bg-color-<?php echo esc_attr( $item_id ); ?>" name="fx_mega_bg_color[<?php echo esc_attr( $item_id ); ?>]" value="<?php echo esc_attr( $bg_color ); ?>" class="widefat" />
         </label>
     </p>
     <p class="field-mega-bg-image description description-wide">
         <label for="edit-fx-mega-bg-image-<?php echo esc_attr( $item_id ); ?>">
-            <?php esc_html_e( 'Background Image URL', 'fortiveax' ); ?>
+            <?php esc_html_e( 'Background Image URL', 'fx' ); ?>
             <input type="text" id="edit-fx-mega-bg-image-<?php echo esc_attr( $item_id ); ?>" name="fx_mega_bg_image[<?php echo esc_attr( $item_id ); ?>]" value="<?php echo esc_attr( $bg_image ); ?>" class="widefat" />
         </label>
     </p>
     <p class="field-mega-width description description-wide">
         <label for="edit-fx-mega-width-<?php echo esc_attr( $item_id ); ?>">
-            <?php esc_html_e( 'Panel Width (e.g. 800px)', 'fortiveax' ); ?>
+            <?php esc_html_e( 'Panel Width (e.g. 800px)', 'fx' ); ?>
             <input type="text" id="edit-fx-mega-width-<?php echo esc_attr( $item_id ); ?>" name="fx_mega_width[<?php echo esc_attr( $item_id ); ?>]" value="<?php echo esc_attr( $width ); ?>" class="widefat" />
         </label>
     </p>
     <p class="field-mega-custom description description-wide">
         <label for="edit-fx-mega-custom-<?php echo esc_attr( $item_id ); ?>">
-            <?php esc_html_e( 'Custom HTML', 'fortiveax' ); ?>
+            <?php esc_html_e( 'Custom HTML', 'fx' ); ?>
             <textarea id="edit-fx-mega-custom-<?php echo esc_attr( $item_id ); ?>" name="fx_mega_custom[<?php echo esc_attr( $item_id ); ?>]" class="widefat" rows="3"><?php echo esc_textarea( $custom ); ?></textarea>
         </label>
     </p>
     <?php
 }
-add_action( 'wp_nav_menu_item_custom_fields', 'fortiveax_megamenu_fields', 10, 2 );
+add_action( 'wp_nav_menu_item_custom_fields', 'fx_megamenu_fields', 10, 2 );
 
 // Save meta on menu item update.
-function fortiveax_save_megamenu_fields( $menu_id, $menu_item_db_id ) {
+function fx_save_megamenu_fields( $menu_id, $menu_item_db_id ) {
     $fields = array(
         'fx_mega_enabled' => '_fx_mega_enabled',
         'fx_mega_cols'    => '_fx_mega_cols',
@@ -75,4 +75,4 @@ function fortiveax_save_megamenu_fields( $menu_id, $menu_item_db_id ) {
         }
     }
 }
-add_action( 'wp_update_nav_menu_item', 'fortiveax_save_megamenu_fields', 10, 2 );
+add_action( 'wp_update_nav_menu_item', 'fx_save_megamenu_fields', 10, 2 );

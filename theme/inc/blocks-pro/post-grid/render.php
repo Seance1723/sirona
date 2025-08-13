@@ -1,5 +1,5 @@
 <?php
-function fortiveax_render_post_grid( $attributes ) {
+function fx_render_post_grid( $attributes ) {
     $defaults = [
         'postType'     => 'post',
         'order'        => 'DESC',
@@ -17,11 +17,11 @@ function fortiveax_render_post_grid( $attributes ) {
 
     $query = new WP_Query( $query_args );
     if ( ! $query->have_posts() ) {
-        return '<div class="wp-block-fortiveax-post-grid"></div>';
+        return '<div class="wp-block-fx-post-grid"></div>';
     }
 
     ob_start();
-    echo '<div class="wp-block-fortiveax-post-grid">';
+    echo '<div class="wp-block-fx-post-grid">';
     while ( $query->have_posts() ) {
         $query->the_post();
         echo '<article class="post-item">';

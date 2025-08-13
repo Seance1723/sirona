@@ -11,15 +11,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Output basic Open Graph and Twitter meta tags.
  */
-function fortiveax_meta_tags() {
+function fx_meta_tags() {
     if ( is_admin() ) {
         return;
     }
     global $post;
     $title       = is_singular() ? get_the_title( $post ) : get_bloginfo( 'name' );
-    $description = is_singular() ? wp_strip_all_tags( get_the_excerpt( $post ) ) : fxo( 'meta_description', get_bloginfo( 'description' ) );
+    $description = is_singular() ? wp_strip_all_tags( get_the_excerpt( $post ) ) : fx_get_option( 'meta_description', get_bloginfo( 'description' ) );
     $url         = is_singular() ? get_permalink( $post ) : home_url( '/' );
-    $image       = is_singular() && has_post_thumbnail( $post ) ? get_the_post_thumbnail_url( $post, 'full' ) : fxo( 'og_image', fxo( 'logo' ) );
+    $image       = is_singular() && has_post_thumbnail( $post ) ? get_the_post_thumbnail_url( $post, 'full' ) : fx_get_option( 'og_image', fx_get_option( 'logo' ) );
 
     // Per-post overrides.
     $og_title       = is_singular() ? get_post_meta( $post->ID, 'og_title', true ) : '';
@@ -36,7 +36,7 @@ function fortiveax_meta_tags() {
     $twitter_title       = $twitter_title ? $twitter_title : $og_title;
     $twitter_description = $twitter_description ? $twitter_description : $og_description;
     $twitter_image       = $twitter_image ? $twitter_image : $og_image;
-    $twitter_handle      = fxo( 'twitter_handle' );
+    $twitter_handle      = fx_get_option( 'twitter_handle' );
 
     echo '<meta name="description" content="' . esc_attr( $description ) . '" />' . "\n";
     echo '<meta property="og:title" content="' . esc_attr( $og_title ) . '" />' . "\n";
@@ -57,13 +57,13 @@ function fortiveax_meta_tags() {
         echo '<meta name="twitter:image" content="' . esc_url( $twitter_image ) . '" />' . "\n";
     }
 }
-add_action( 'wp_head', 'fortiveax_meta_tags', 1 );
+add_action( 'wp_head', 'fx_meta_tags', 1 );
 
 /**
  * Output Organization schema.
  */
-function fortiveax_schema_organization() {
-    if ( ! fxo( 'schema_org', 1 ) ) {
+function fx_schema_organization() {
+    if ( ! fx_get_option( 'schema_org', 1 ) ) {
         return;
     }
     $data = array(
@@ -72,19 +72,19 @@ function fortiveax_schema_organization() {
         'url'      => home_url( '/' ),
         'name'     => get_bloginfo( 'name' ),
     );
-    $logo = fxo( 'logo' );
+    $logo = fx_get_option( 'logo' );
     if ( $logo ) {
         $data['logo'] = esc_url( $logo );
     }
     echo '<script type="application/ld+json">' . wp_json_encode( $data ) . '</script>' . "\n";
 }
-add_action( 'wp_head', 'fortiveax_schema_organization' );
+add_action( 'wp_head', 'fx_schema_organization' );
 
 /**
  * Output BreadcrumbList schema.
  */
-function fortiveax_schema_breadcrumb() {
-    if ( ! fxo( 'schema_breadcrumb', 1 ) || is_front_page() ) {
+function fx_schema_breadcrumb() {
+    if ( ! fx_get_option( 'schema_breadcrumb', 1 ) || is_front_page() ) {
         return;
     }
     $items    = array();
@@ -132,13 +132,13 @@ function fortiveax_schema_breadcrumb() {
 
     echo '<script type="application/ld+json">' . wp_json_encode( $data ) . '</script>' . "\n";
 }
-add_action( 'wp_head', 'fortiveax_schema_breadcrumb' );
+add_action( 'wp_head', 'fx_schema_breadcrumb' );
 
 /**
  * Output Article schema for posts.
  */
-function fortiveax_schema_article() {
-    if ( ! fxo( 'schema_article', 1 ) || ! is_singular( 'post' ) ) {
+function fx_schema_article() {
+    if ( ! fx_get_option( 'schema_article', 1 ) || ! is_singular( 'post' ) ) {
         return;
     }
     global $post;
@@ -162,13 +162,13 @@ function fortiveax_schema_article() {
     }
     echo '<script type="application/ld+json">' . wp_json_encode( $data ) . '</script>' . "\n";
 }
-add_action( 'wp_head', 'fortiveax_schema_article' );
+add_action( 'wp_head', 'fx_schema_article' );
 
 /**
  * Output FAQ schema.
  */
-function fortiveax_schema_faq() {
-    if ( ! fxo( 'schema_faq', 1 ) ) {
+function fx_schema_faq() {
+    if ( ! fx_get_option( 'schema_faq', 1 ) ) {
         return;
     }
     $faqs = array();
@@ -206,13 +206,13 @@ function fortiveax_schema_faq() {
     );
     echo '<script type="application/ld+json">' . wp_json_encode( $data ) . '</script>' . "\n";
 }
-add_action( 'wp_head', 'fortiveax_schema_faq' );
+add_action( 'wp_head', 'fx_schema_faq' );
 
 /**
  * Output Service schema for portfolio items.
  */
-function fortiveax_schema_service() {
-    if ( ! fxo( 'schema_service', 1 ) || ! is_singular( 'portfolio' ) ) {
+function fx_schema_service() {
+    if ( ! fx_get_option( 'schema_service', 1 ) || ! is_singular( 'portfolio' ) ) {
         return;
     }
     global $post;
@@ -231,4 +231,4 @@ function fortiveax_schema_service() {
     }
     echo '<script type="application/ld+json">' . wp_json_encode( $data ) . '</script>' . "\n";
 }
-add_action( 'wp_head', 'fortiveax_schema_service' );
+add_action( 'wp_head', 'fx_schema_service' );

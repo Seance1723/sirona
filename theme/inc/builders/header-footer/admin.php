@@ -14,8 +14,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function fx_hf_register_builder_page() {
     add_theme_page(
-        __( 'Header/Footer Builder', 'fortiveax' ),
-        __( 'Header/Footer Builder', 'fortiveax' ),
+        __( 'Header/Footer Builder', 'fx' ),
+        __( 'Header/Footer Builder', 'fx' ),
         'manage_options',
         'fx-hf-builder',
         'fx_hf_builder_page'
@@ -27,7 +27,7 @@ add_action( 'admin_menu', 'fx_hf_register_builder_page' );
  * Render the builder page.
  */
 function fx_hf_builder_page() {
-    echo '<div class="wrap"><h1>' . esc_html__( 'Header/Footer Builder', 'fortiveax' ) . '</h1><div id="fx-hf-builder"></div></div>';
+    echo '<div class="wrap"><h1>' . esc_html__( 'Header/Footer Builder', 'fx' ) . '</h1><div id="fx-hf-builder"></div></div>';
 }
 
 /**

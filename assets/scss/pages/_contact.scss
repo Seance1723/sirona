@@ -19,7 +19,7 @@
     }
   }
 
-  .contact-toast {
+  .fx-contact-toast {
     position: fixed;
     bottom: 1rem;
     right: 1rem;
@@ -30,7 +30,7 @@
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
 
-    &.visible {
+    &.fx-visible {
       opacity: 1;
     }
   }

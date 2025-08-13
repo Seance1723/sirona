@@ -2,7 +2,7 @@
 /**
  * Blocks and shortcodes for custom post type listings.
  */
-function fortiveax_render_cpt_list( $post_type, $layout = 'grid' ) {
+function fx_render_cpt_list( $post_type, $layout = 'grid' ) {
     $query = new WP_Query(
         array(
             'post_type'      => $post_type,
@@ -15,11 +15,11 @@ function fortiveax_render_cpt_list( $post_type, $layout = 'grid' ) {
     }
 
     ob_start();
-    $classes = 'fortiveax-list fortiveax-list-' . esc_attr( $layout );
+    $classes = 'fx-list fx-list-' . esc_attr( $layout );
     echo '<div class="' . $classes . '">';
     while ( $query->have_posts() ) {
         $query->the_post();
-        echo '<div class="fortiveax-item">';
+        echo '<div class="fx-item">';
         if ( has_post_thumbnail() ) {
             the_post_thumbnail();
         }
@@ -32,43 +32,43 @@ function fortiveax_render_cpt_list( $post_type, $layout = 'grid' ) {
     return ob_get_clean();
 }
 
-function fortiveax_portfolio_shortcode( $atts ) {
+function fx_portfolio_shortcode( $atts ) {
     $atts = shortcode_atts( array( 'layout' => 'grid' ), $atts, 'portfolio_list' );
-    return fortiveax_render_cpt_list( 'portfolio', $atts['layout'] );
+    return fx_render_cpt_list( 'portfolio', $atts['layout'] );
 }
-add_shortcode( 'portfolio_list', 'fortiveax_portfolio_shortcode' );
+add_shortcode( 'portfolio_list', 'fx_portfolio_shortcode' );
 
-function fortiveax_testimonial_shortcode( $atts ) {
+function fx_testimonial_shortcode( $atts ) {
     $atts = shortcode_atts( array( 'layout' => 'grid' ), $atts, 'testimonial_list' );
-    return fortiveax_render_cpt_list( 'testimonial', $atts['layout'] );
+    return fx_render_cpt_list( 'testimonial', $atts['layout'] );
 }
-add_shortcode( 'testimonial_list', 'fortiveax_testimonial_shortcode' );
+add_shortcode( 'testimonial_list', 'fx_testimonial_shortcode' );
 
-function fortiveax_team_shortcode( $atts ) {
+function fx_team_shortcode( $atts ) {
     $atts = shortcode_atts( array( 'layout' => 'grid' ), $atts, 'team_list' );
-    return fortiveax_render_cpt_list( 'team', $atts['layout'] );
+    return fx_render_cpt_list( 'team', $atts['layout'] );
 }
-add_shortcode( 'team_list', 'fortiveax_team_shortcode' );
+add_shortcode( 'team_list', 'fx_team_shortcode' );
 
-function fortiveax_faq_shortcode( $atts ) {
+function fx_faq_shortcode( $atts ) {
     $atts = shortcode_atts( array( 'layout' => 'grid' ), $atts, 'faq_list' );
-    return fortiveax_render_cpt_list( 'faq', $atts['layout'] );
+    return fx_render_cpt_list( 'faq', $atts['layout'] );
 }
-add_shortcode( 'faq_list', 'fortiveax_faq_shortcode' );
+add_shortcode( 'faq_list', 'fx_faq_shortcode' );
 
-function fortiveax_register_blocks() {
-    register_block_type( get_template_directory() . '/blocks/animated-box' );
-    register_block_type( get_template_directory() . '/blocks/global-element' );
+function fx_register_blocks() {
+    register_block_type( get_theme_file_path( 'blocks/animated-box' ) );
+    register_block_type( get_theme_file_path( 'blocks/global-element' ) );
     $blocks = array(
-        'portfolio'   => __( 'Portfolio List', 'fortiveax' ),
-        'testimonial' => __( 'Testimonial List', 'fortiveax' ),
-        'team'        => __( 'Team List', 'fortiveax' ),
-        'faq'         => __( 'FAQ List', 'fortiveax' ),
+        'portfolio'   => __( 'Portfolio List', 'fx' ),
+        'testimonial' => __( 'Testimonial List', 'fx' ),
+        'team'        => __( 'Team List', 'fx' ),
+        'faq'         => __( 'FAQ List', 'fx' ),
     );
 
     foreach ( $blocks as $type => $title ) {
         register_block_type(
-            'fortiveax/' . $type . '-list',
+            'fx/' . $type . '-list',
             array(
                 'api_version'     => 2,
                 'title'           => $title,
@@ -82,10 +82,10 @@ function fortiveax_register_blocks() {
                 ),
                 'render_callback' => function( $attributes ) use ( $type ) {
                     $layout = isset( $attributes['layout'] ) ? $attributes['layout'] : 'grid';
-                    return fortiveax_render_cpt_list( $type, $layout );
+                    return fx_render_cpt_list( $type, $layout );
                 },
             )
         );
     }
 }
-add_action( 'init', 'fortiveax_register_blocks' );
+add_action( 'init', 'fx_register_blocks' );

@@ -24,13 +24,13 @@ function closeAll(items) {
     const link = item.querySelector('a');
     const panel = item.querySelector('.fx-mega');
     link.setAttribute('aria-expanded', 'false');
-    panel.classList.remove('is-open');
+    panel.classList.remove('fx-is-open');
     panel.setAttribute('aria-hidden', 'true');
   });
 }
 
 export function initMegaMenu() {
-  const items = document.querySelectorAll('.primary-navigation .menu-item-has-mega');
+  const items = document.querySelectorAll('.fx-primary-navigation .menu-item-has-mega');
   if (!items.length) return;
   items.forEach((item) => {
     const link = item.querySelector('a');
@@ -45,7 +45,7 @@ export function initMegaMenu() {
       closeAll(items);
       if (!expanded) {
         link.setAttribute('aria-expanded', 'true');
-        panel.classList.add('is-open');
+        panel.classList.add('fx-is-open');
         panel.setAttribute('aria-hidden', 'false');
         const firstLink = panel.querySelector('a, button');
         firstLink?.focus();

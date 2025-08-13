@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Register WooCommerce support and image sizes.
  */
-function fortiveax_woocommerce_setup() {
+function fx_woocommerce_setup() {
     add_theme_support(
         'woocommerce',
         array(
@@ -23,14 +23,14 @@ function fortiveax_woocommerce_setup() {
     add_theme_support( 'wc-product-gallery-lightbox' );
     add_theme_support( 'wc-product-gallery-slider' );
 }
-add_action( 'after_setup_theme', 'fortiveax_woocommerce_setup' );
+add_action( 'after_setup_theme', 'fx_woocommerce_setup' );
 
 /**
  * Cart link used in header.
  */
-function fortiveax_cart_link() {
+function fx_cart_link() {
     ?>
-    <a class="cart-contents" href="<?php echo esc_url( wc_get_cart_url() ); ?>" title="<?php esc_attr_e( 'View your shopping cart', 'fortiveax' ); ?>">
+    <a class="cart-contents" href="<?php echo esc_url( wc_get_cart_url() ); ?>" title="<?php esc_attr_e( 'View your shopping cart', 'fx' ); ?>">
         <span class="count"><?php echo esc_html( WC()->cart->get_cart_contents_count() ); ?></span>
     </a>
     <?php
@@ -39,10 +39,10 @@ function fortiveax_cart_link() {
 /**
  * Display header mini cart.
  */
-function fortiveax_header_cart() {
+function fx_header_cart() {
     ?>
     <div class="header-cart">
-        <?php fortiveax_cart_link(); ?>
+        <?php fx_cart_link(); ?>
         <?php the_widget( 'WC_Widget_Cart', 'title=' ); ?>
     </div>
     <?php
@@ -54,13 +54,13 @@ function fortiveax_header_cart() {
  * @param array $fragments Fragments to refresh.
  * @return array
  */
-function fortiveax_woocommerce_cart_link_fragment( $fragments ) {
+function fx_woocommerce_cart_link_fragment( $fragments ) {
     ob_start();
-    fortiveax_cart_link();
+    fx_cart_link();
     $fragments['a.cart-contents'] = ob_get_clean();
     return $fragments;
 }
-add_filter( 'woocommerce_add_to_cart_fragments', 'fortiveax_woocommerce_cart_link_fragment' );
+add_filter( 'woocommerce_add_to_cart_fragments', 'fx_woocommerce_cart_link_fragment' );
 
 /**
  * Products per row option.
@@ -68,10 +68,10 @@ add_filter( 'woocommerce_add_to_cart_fragments', 'fortiveax_woocommerce_cart_lin
  * @param int $cols Default columns.
  * @return int
  */
-function fortiveax_loop_columns( $cols ) {
-    if ( 'list' === fxo( 'woo_layout', 'grid' ) ) {
+function fx_loop_columns( $cols ) {
+    if ( 'list' === fx_get_option( 'woo_layout', 'grid' ) ) {
         return 1;
     }
-    return max( 1, absint( fxo( 'woo_columns_desktop', 3 ) ) );
+    return max( 1, absint( fx_get_option( 'woo_columns_desktop', 3 ) ) );
 }
-add_filter( 'loop_shop_columns', 'fortiveax_loop_columns' );
+add_filter( 'loop_shop_columns', 'fx_loop_columns' );

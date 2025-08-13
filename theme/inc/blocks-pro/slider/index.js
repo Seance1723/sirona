@@ -15,7 +15,7 @@ import './style.scss';
 
 const ALLOWED_BLOCKS = [ 'core/paragraph', 'core/image', 'core/heading' ];
 
-registerBlockType( 'fortiveax/slider', {
+registerBlockType( 'fx/slider', {
     edit( { attributes, setAttributes } ) {
         const { autoplay, loop, arrows, dots, animation } = attributes;
         const blockProps = useBlockProps( {
@@ -36,42 +36,42 @@ registerBlockType( 'fortiveax/slider', {
                     setAttributes={ setAttributes }
                 />
                 <InspectorControls>
-                    <PanelBody title={ __( 'Slider Settings', 'fortiveax' ) }>
+                    <PanelBody title={ __( 'Slider Settings', 'fx' ) }>
                         <ToggleControl
-                            label={ __( 'Autoplay', 'fortiveax' ) }
+                            label={ __( 'Autoplay', 'fx' ) }
                             checked={ autoplay }
                             onChange={ ( value ) =>
                                 setAttributes( { autoplay: value } )
                             }
                         />
                         <ToggleControl
-                            label={ __( 'Loop', 'fortiveax' ) }
+                            label={ __( 'Loop', 'fx' ) }
                             checked={ loop }
                             onChange={ ( value ) =>
                                 setAttributes( { loop: value } )
                             }
                         />
                         <ToggleControl
-                            label={ __( 'Show arrows', 'fortiveax' ) }
+                            label={ __( 'Show arrows', 'fx' ) }
                             checked={ arrows }
                             onChange={ ( value ) =>
                                 setAttributes( { arrows: value } )
                             }
                         />
                         <ToggleControl
-                            label={ __( 'Show dots', 'fortiveax' ) }
+                            label={ __( 'Show dots', 'fx' ) }
                             checked={ dots }
                             onChange={ ( value ) =>
                                 setAttributes( { dots: value } )
                             }
                         />
                         <SelectControl
-                            label={ __( 'Animation', 'fortiveax' ) }
+                            label={ __( 'Animation', 'fx' ) }
                             value={ animation }
                             options={ [
-                                { label: __( 'None', 'fortiveax' ), value: 'none' },
-                                { label: __( 'Fade In', 'fortiveax' ), value: 'fadeIn' },
-                                { label: __( 'Slide Up', 'fortiveax' ), value: 'slideUp' },
+                                { label: __( 'None', 'fx' ), value: 'none' },
+                                { label: __( 'Fade In', 'fx' ), value: 'fadeIn' },
+                                { label: __( 'Slide Up', 'fx' ), value: 'slideUp' },
                             ] }
                             onChange={ ( value ) =>
                                 setAttributes( { animation: value } )

@@ -90,9 +90,9 @@ function fx_global_elements_import( $json ) {
 function fx_global_elements_editor_assets() {
     wp_enqueue_script(
         'fx-global-elements-editor',
-        get_template_directory_uri() . '/inc/global-elements/editor.js',
+        get_theme_file_uri( 'inc/global-elements/editor.js' ),
         array( 'wp-i18n', 'wp-plugins', 'wp-edit-post', 'wp-data', 'wp-blocks', 'wp-api-fetch', 'wp-components', 'wp-element' ),
-        filemtime( get_template_directory() . '/inc/global-elements/editor.js' ),
+        filemtime( get_theme_file_path( 'inc/global-elements/editor.js' ) ),
         true
     );
 }
