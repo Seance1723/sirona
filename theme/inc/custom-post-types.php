@@ -65,5 +65,18 @@ function fortiveax_register_cpts() {
             'show_in_rest'=> true,
         )
     );
+    register_post_type(
+        'fx_global',
+        array(
+            'labels' => array(
+                'name'          => __( 'Global Elements', 'fortiveax' ),
+                'singular_name' => __( 'Global Element', 'fortiveax' ),
+            ),
+            'public'      => false,
+            'show_ui'     => true,
+            'supports'    => array( 'title', 'editor' ),
+            'show_in_rest'=> true,
+        )
+    );
 }
 add_action( 'init', 'fortiveax_register_cpts' );

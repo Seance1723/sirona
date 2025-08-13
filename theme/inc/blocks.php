@@ -58,6 +58,7 @@ add_shortcode( 'faq_list', 'fortiveax_faq_shortcode' );
 
 function fortiveax_register_blocks() {
     register_block_type( get_template_directory() . '/blocks/animated-box' );
+    register_block_type( get_template_directory() . '/blocks/global-element' );
     $blocks = array(
         'portfolio'   => __( 'Portfolio List', 'fortiveax' ),
         'testimonial' => __( 'Testimonial List', 'fortiveax' ),

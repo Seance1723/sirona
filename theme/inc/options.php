@@ -38,6 +38,7 @@ function fortiveax_default_options() {
         'schema_service'   => 1,
         'high_contrast'    => 0,
         'import_export'    => '',
+        'global_elements'  => '',
         'woo_layout'       => 'grid',
         'woo_products_per_row' => 3,
     );
@@ -237,6 +238,11 @@ function fortiveax_settings_init() {
         'type'        => 'textarea',
         'description' => __( 'Paste export data here or copy current settings.', 'fortiveax' ),
     ) );
+    add_settings_field( 'global_elements', __( 'Global Elements JSON', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_import', 'fortiveax_import_section', array(
+        'label_for'   => 'global_elements',
+        'type'        => 'textarea',
+        'description' => __( 'Paste JSON here to import or copy to export.', 'fortiveax' ),
+    ) );
 }
 add_action( 'admin_init', 'fortiveax_settings_init' );
 
@@ -281,6 +287,12 @@ function fortiveax_sanitize_options( $input ) {
                 break;
             case 'import_export':
                 $output[ $key ] = isset( $input[ $key ] ) ? sanitize_textarea_field( $input[ $key ] ) : $default;
+                break;
+            case 'global_elements':
+                if ( ! empty( $input[ $key ] ) ) {
+                    fx_global_elements_import( $input[ $key ] );
+                }
+                $output[ $key ] = '';
                 break;
             case 'social_links':
                 $output[ $key ] = isset( $input[ $key ] ) ? sanitize_textarea_field( $input[ $key ] ) : $default;
@@ -334,10 +346,11 @@ function fortiveax_field_cb( $args ) {
             );
             break;
         case 'textarea':
+            $display_value = ( 'global_elements' === $key ) ? fx_global_elements_export() : $value;
             printf(
                 '<textarea id="%1$s" name="fortiveax_options[%1$s]" rows="5" cols="50">%2$s</textarea>',
                 esc_attr( $key ),
-                esc_textarea( $value )
+                esc_textarea( $display_value )
             );
             break;
         default:

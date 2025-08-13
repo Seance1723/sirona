@@ -1,0 +1,12 @@
+{
+  "apiVersion": 2,
+  "name": "fortiveax/global-element",
+  "title": "Global Element",
+  "category": "widgets",
+  "icon": "admin-site",
+  "attributes": {
+    "id": { "type": "integer", "default": 0 }
+  },
+  "editorScript": "file:./build/index.js",
+  "render": "file:./render.php"
+}
