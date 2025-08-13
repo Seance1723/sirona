@@ -28,6 +28,14 @@ function fortiveax_default_options() {
         'cta_text'         => '',
         'google_analytics' => '',
         'lazy_load'        => 1,
+        'defer_scripts'    => 0,
+        'async_noncritical'=> 0,
+        'inline_critical_css' => 0,
+        'lazy_iframes'     => 1,
+        'disable_emojis'   => 0,
+        'disable_embeds'   => 0,
+        'disable_jquery_migrate' => 0,
+        'script_manager'   => '',
         'meta_description' => '',
         'og_image'         => '',
         'twitter_handle'   => '',
@@ -191,6 +199,39 @@ function fortiveax_settings_init() {
         'label_for' => 'lazy_load',
         'type'      => 'checkbox',
     ) );
+    add_settings_field( 'defer_scripts', __( 'Defer Scripts', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_performance', 'fortiveax_performance_section', array(
+        'label_for' => 'defer_scripts',
+        'type'      => 'checkbox',
+    ) );
+    add_settings_field( 'async_noncritical', __( 'Async Non-critical Scripts', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_performance', 'fortiveax_performance_section', array(
+        'label_for' => 'async_noncritical',
+        'type'      => 'checkbox',
+    ) );
+    add_settings_field( 'inline_critical_css', __( 'Inline Critical CSS', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_performance', 'fortiveax_performance_section', array(
+        'label_for' => 'inline_critical_css',
+        'type'      => 'checkbox',
+    ) );
+    add_settings_field( 'lazy_iframes', __( 'Lazy-load Iframes', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_performance', 'fortiveax_performance_section', array(
+        'label_for' => 'lazy_iframes',
+        'type'      => 'checkbox',
+    ) );
+    add_settings_field( 'disable_emojis', __( 'Disable Emojis', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_performance', 'fortiveax_performance_section', array(
+        'label_for' => 'disable_emojis',
+        'type'      => 'checkbox',
+    ) );
+    add_settings_field( 'disable_embeds', __( 'Disable Embeds', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_performance', 'fortiveax_performance_section', array(
+        'label_for' => 'disable_embeds',
+        'type'      => 'checkbox',
+    ) );
+    add_settings_field( 'disable_jquery_migrate', __( 'Disable jQuery Migrate', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_performance', 'fortiveax_performance_section', array(
+        'label_for' => 'disable_jquery_migrate',
+        'type'      => 'checkbox',
+    ) );
+    add_settings_field( 'script_manager', __( 'Script Manager', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_performance', 'fortiveax_performance_section', array(
+        'label_for'   => 'script_manager',
+        'type'        => 'textarea',
+        'description' => __( 'One per line: template|handle|mode (disable|defer|async)', 'fortiveax' ),
+    ) );
 
     // SEO.
     add_settings_field( 'meta_description', __( 'Meta Description', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_seo', 'fortiveax_seo_section', array(
@@ -263,6 +304,13 @@ function fortiveax_sanitize_options( $input ) {
             case 'header_sticky':
             case 'show_hero':
             case 'lazy_load':
+            case 'defer_scripts':
+            case 'async_noncritical':
+            case 'inline_critical_css':
+            case 'lazy_iframes':
+            case 'disable_emojis':
+            case 'disable_embeds':
+            case 'disable_jquery_migrate':
             case 'schema_org':
             case 'schema_breadcrumb':
             case 'schema_article':
@@ -295,6 +343,7 @@ function fortiveax_sanitize_options( $input ) {
                 $output[ $key ] = '';
                 break;
             case 'social_links':
+            case 'script_manager':
                 $output[ $key ] = isset( $input[ $key ] ) ? sanitize_textarea_field( $input[ $key ] ) : $default;
                 break;
             default:
