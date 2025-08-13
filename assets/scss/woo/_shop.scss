@@ -1,0 +1,57 @@
+/* WooCommerce specific styles for Sirona theme */
+
+
+.woocommerce ul.products {
+  display: grid;
+  gap: 1.5rem;
+  grid-auto-rows: 1fr;
+}
+
+.woo-cols-mobile-1 .woocommerce ul.products { grid-template-columns: repeat(1, 1fr); }
+.woo-cols-mobile-2 .woocommerce ul.products { grid-template-columns: repeat(2, 1fr); }
+
+@media (min-width: 768px) {
+  .woo-cols-tablet-1 .woocommerce ul.products { grid-template-columns: repeat(1, 1fr); }
+  .woo-cols-tablet-2 .woocommerce ul.products { grid-template-columns: repeat(2, 1fr); }
+  .woo-cols-tablet-3 .woocommerce ul.products { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 992px) {
+  .woo-cols-desktop-2 .woocommerce ul.products { grid-template-columns: repeat(2, 1fr); }
+  .woo-cols-desktop-3 .woocommerce ul.products { grid-template-columns: repeat(3, 1fr); }
+  .woo-cols-desktop-4 .woocommerce ul.products { grid-template-columns: repeat(4, 1fr); }
+}
+
+.woocommerce ul.products li.product {
+  position: relative;
+}
+
+.woo-badge {
+  position: absolute;
+  top: .5rem;
+  left: .5rem;
+  background: var(--color-primary);
+  color: var(--color-light);
+  padding: .25rem .5rem;
+  font-size: .75rem;
+}
+
+.woo-sticky-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bs-body-bg);
+  box-shadow: 0 -2px 5px rgba(0,0,0,.1);
+  padding: .5rem 1rem;
+}
+
+.mini-cart-panel.is-offcanvas {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 300px;
+  height: 100%;
+  background: var(--bs-body-bg);
+  transition: right .3s ease;
+}

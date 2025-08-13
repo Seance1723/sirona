@@ -72,21 +72,6 @@ function fortiveax_loop_columns( $cols ) {
     if ( 'list' === fxo( 'woo_layout', 'grid' ) ) {
         return 1;
     }
-    return max( 1, absint( fxo( 'woo_products_per_row', 3 ) ) );
+    return max( 1, absint( fxo( 'woo_columns_desktop', 3 ) ) );
 }
 add_filter( 'loop_shop_columns', 'fortiveax_loop_columns' );
-
-/**
- * Add layout class to body based on option.
- *
- * @param array $classes Existing body classes.
- * @return array
- */
-function fortiveax_woocommerce_layout_class( $classes ) {
-    if ( is_shop() || is_product_taxonomy() ) {
-        $layout    = fxo( 'woo_layout', 'grid' );
-        $classes[] = 'woo-layout-' . sanitize_html_class( $layout );
-    }
-    return $classes;
-}
-add_filter( 'body_class', 'fortiveax_woocommerce_layout_class' );

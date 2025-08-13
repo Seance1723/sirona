@@ -49,6 +49,15 @@ function fortiveax_default_options() {
         'global_elements'  => '',
         'woo_layout'       => 'grid',
         'woo_products_per_row' => 3,
+        'woo_columns_mobile'  => 1,
+        'woo_columns_tablet'  => 2,
+        'woo_columns_desktop' => 3,
+        'woo_layout_toggle'   => 0,
+        'woo_badge_sale'      => 1,
+        'woo_badge_new'       => 1,
+        'woo_badge_featured'  => 1,
+        'woo_quick_view'      => 0,
+        'woo_offcanvas_cart'  => 0,
         // White Label.
         'wl_brand_name'    => '',
         'wl_logo'          => '',
@@ -191,6 +200,42 @@ function fortiveax_settings_init() {
     add_settings_field( 'woo_products_per_row', __( 'Products Per Row', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_woocommerce', 'fortiveax_woocommerce_section', array(
         'label_for' => 'woo_products_per_row',
         'type'      => 'number',
+    ) );
+    add_settings_field( 'woo_columns_mobile', __( 'Columns – Mobile', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_woocommerce', 'fortiveax_woocommerce_section', array(
+        'label_for' => 'woo_columns_mobile',
+        'type'      => 'number',
+    ) );
+    add_settings_field( 'woo_columns_tablet', __( 'Columns – Tablet', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_woocommerce', 'fortiveax_woocommerce_section', array(
+        'label_for' => 'woo_columns_tablet',
+        'type'      => 'number',
+    ) );
+    add_settings_field( 'woo_columns_desktop', __( 'Columns – Desktop', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_woocommerce', 'fortiveax_woocommerce_section', array(
+        'label_for' => 'woo_columns_desktop',
+        'type'      => 'number',
+    ) );
+    add_settings_field( 'woo_layout_toggle', __( 'Enable Grid/List Toggle', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_woocommerce', 'fortiveax_woocommerce_section', array(
+        'label_for' => 'woo_layout_toggle',
+        'type'      => 'checkbox',
+    ) );
+    add_settings_field( 'woo_badge_sale', __( 'Show Sale Badge', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_woocommerce', 'fortiveax_woocommerce_section', array(
+        'label_for' => 'woo_badge_sale',
+        'type'      => 'checkbox',
+    ) );
+    add_settings_field( 'woo_badge_new', __( 'Show New Badge', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_woocommerce', 'fortiveax_woocommerce_section', array(
+        'label_for' => 'woo_badge_new',
+        'type'      => 'checkbox',
+    ) );
+    add_settings_field( 'woo_badge_featured', __( 'Show Featured Badge', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_woocommerce', 'fortiveax_woocommerce_section', array(
+        'label_for' => 'woo_badge_featured',
+        'type'      => 'checkbox',
+    ) );
+    add_settings_field( 'woo_quick_view', __( 'Enable Quick View', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_woocommerce', 'fortiveax_woocommerce_section', array(
+        'label_for' => 'woo_quick_view',
+        'type'      => 'checkbox',
+    ) );
+    add_settings_field( 'woo_offcanvas_cart', __( 'Enable Off-canvas Cart', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_woocommerce', 'fortiveax_woocommerce_section', array(
+        'label_for' => 'woo_offcanvas_cart',
+        'type'      => 'checkbox',
     ) );
 
     // CTA.

@@ -11,6 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 do_action( 'woocommerce_before_mini_cart' );
 ?>
+<div class="mini-cart-panel<?php echo fxo( 'woo_offcanvas_cart' ) ? ' is-offcanvas' : ''; ?>">
 <ul class="woocommerce-mini-cart cart_list product_list_widget">
     <?php if ( ! WC()->cart->is_empty() ) : ?>
         <?php foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) :
@@ -40,4 +41,5 @@ do_action( 'woocommerce_before_mini_cart' );
         <?php do_action( 'woocommerce_widget_shopping_cart_buttons' ); ?>
     </p>
 <?php endif; ?>
+</div>
 <?php do_action( 'woocommerce_after_mini_cart' ); ?>
