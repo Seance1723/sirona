@@ -1,0 +1,22 @@
+{
+  "apiVersion": 2,
+  "name": "fortiveax/post-grid",
+  "title": "Post Grid",
+  "category": "widgets",
+  "attributes": {
+    "postType": { "type": "string", "default": "post" },
+    "taxonomy": { "type": "string", "default": "" },
+    "terms": { "type": "array", "items": { "type": "number" }, "default": [] },
+    "order": { "type": "string", "default": "DESC" },
+    "orderBy": { "type": "string", "default": "date" },
+    "postsPerPage": { "type": "number", "default": 6 },
+    "pagination": { "type": "string", "default": "none" },
+    "hideDesktop": { "type": "boolean", "default": false },
+    "hideTablet": { "type": "boolean", "default": false },
+    "hideMobile": { "type": "boolean", "default": false },
+    "animation": { "type": "string", "default": "none" }
+  },
+  "editorScript": "file:./build/index.js",
+  "style": "file:./build/style-index.css",
+  "render": "file:./render.php"
+}

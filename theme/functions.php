@@ -207,6 +207,7 @@ add_action( 'wp_enqueue_scripts', 'fortiveax_enqueue_assets' );
 require_once get_template_directory() . '/inc/options.php';
 require_once get_template_directory() . '/inc/custom-post-types.php';
 require_once get_template_directory() . '/inc/blocks.php';
+require_once get_template_directory() . '/inc/blocks-pro/index.php';
 require_once get_template_directory() . '/inc/global-elements/render.php';
 require_once get_template_directory() . '/inc/seo.php';
 require_once get_template_directory() . '/inc/contact-form.php';
