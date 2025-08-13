@@ -72,9 +72,10 @@ function fortiveax_dashboard_assets( $hook ) {
             'links'    => array(
                 'themeOptions' => admin_url( 'customize.php' ),
                 'demoImport'   => admin_url( 'themes.php?page=one-click-demo-import' ),
-                'setupWizard'  => admin_url( 'admin.php?page=fortiveax-setup' ),
+                'setupWizard'  => admin_url( 'themes.php?page=fortiveax-setup' ),
                 'docs'         => '#',
             ),
+            'wizardComplete' => (bool) get_option( 'fortiveax_wizard_complete' ),
         );
 
         wp_localize_script( 'fortiveax-dashboard', 'fortiveaxDashboard', $data );

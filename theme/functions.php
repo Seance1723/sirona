@@ -216,6 +216,7 @@ require_once get_template_directory() . '/inc/woocommerce.php';
 require_once get_template_directory() . '/inc/woo/setup.php';
 require_once get_theme_file_path( 'inc/tgm/register-plugins.php' );
 require_once get_theme_file_path( 'inc/admin/rest-dashboard.php' );
+require_once get_theme_file_path( 'inc/setup-wizard/wizard.php' );
 if ( is_admin() ) {
     require_once get_theme_file_path( 'inc/admin/dashboard.php' );
 }

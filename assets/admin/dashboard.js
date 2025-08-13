@@ -54,7 +54,15 @@
                 null,
                 createElement('li', null, createElement('a', { href: fortiveaxDashboard.links.themeOptions }, 'Theme Options')),
                 createElement('li', null, createElement('a', { href: fortiveaxDashboard.links.demoImport }, 'Demo Import')),
-                createElement('li', null, createElement('a', { href: fortiveaxDashboard.links.setupWizard }, 'Setup Wizard')),
+                createElement(
+                    'li',
+                    null,
+                    createElement(
+                        'a',
+                        { href: fortiveaxDashboard.links.setupWizard },
+                        fortiveaxDashboard.wizardComplete ? 'Re-run Wizard' : 'Setup Wizard'
+                    )
+                ),
                 createElement('li', null, createElement('a', { href: fortiveaxDashboard.links.docs }, 'Documentation'))
             )
         );
