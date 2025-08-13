@@ -217,6 +217,7 @@ require_once get_theme_file_path( 'inc/admin/rest-dashboard.php' );
 if ( is_admin() ) {
     require_once get_theme_file_path( 'inc/admin/dashboard.php' );
 }
+require_once get_theme_file_path( 'inc/admin/branding.php' );
 require_once get_theme_file_path( 'inc/builders/header-footer/storage.php' );
 require_once get_theme_file_path( 'inc/builders/header-footer/render.php' );
 require_once get_theme_file_path( 'inc/meta/layout-assign.php' );

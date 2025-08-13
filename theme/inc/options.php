@@ -49,6 +49,14 @@ function fortiveax_default_options() {
         'global_elements'  => '',
         'woo_layout'       => 'grid',
         'woo_products_per_row' => 3,
+        // White Label.
+        'wl_brand_name'    => '',
+        'wl_logo'          => '',
+        'wl_support_url'   => '',
+        'wl_support_email' => '',
+        'wl_hide_name'     => 0,
+        'wl_lock_pass'     => '',
+        'wl_import_export' => '',
     );
 }
 
@@ -69,7 +77,9 @@ function fxo( $key, $fallback = '' ) {
  * Add options page to the Appearance menu.
  */
 function fortiveax_add_admin_menu() {
-    add_theme_page( 'FortiveaX Options', 'FortiveaX Options', 'manage_options', 'fortiveax-options', 'fortiveax_options_page_html' );
+    $brand = fortiveax_get_brand_name();
+    $title = sprintf( __( '%s Options', 'fortiveax' ), $brand );
+    add_theme_page( $title, $title, 'manage_options', 'fortiveax-options', 'fortiveax_options_page_html' );
 }
 add_action( 'admin_menu', 'fortiveax_add_admin_menu' );
 
@@ -102,6 +112,7 @@ function fortiveax_settings_init() {
         'seo'           => __( 'SEO', 'fortiveax' ),
         'accessibility' => __( 'Accessibility', 'fortiveax' ),
         'import'        => __( 'Import/Export', 'fortiveax' ),
+        'white_label'   => __( 'White Label', 'fortiveax' ),
         'woocommerce'   => __( 'WooCommerce', 'fortiveax' ),
     );
 
@@ -273,6 +284,37 @@ function fortiveax_settings_init() {
         'type'      => 'checkbox',
     ) );
 
+    // White Label.
+    add_settings_field( 'wl_brand_name', __( 'Admin Brand Name', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_white_label', 'fortiveax_white_label_section', array(
+        'label_for' => 'wl_brand_name',
+        'type'      => 'text',
+    ) );
+    add_settings_field( 'wl_logo', __( 'Admin Logo URL', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_white_label', 'fortiveax_white_label_section', array(
+        'label_for' => 'wl_logo',
+        'type'      => 'text',
+    ) );
+    add_settings_field( 'wl_support_url', __( 'Support URL', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_white_label', 'fortiveax_white_label_section', array(
+        'label_for' => 'wl_support_url',
+        'type'      => 'text',
+    ) );
+    add_settings_field( 'wl_support_email', __( 'Support Email', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_white_label', 'fortiveax_white_label_section', array(
+        'label_for' => 'wl_support_email',
+        'type'      => 'text',
+    ) );
+    add_settings_field( 'wl_hide_name', __( 'Hide "FortiveaX" Name', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_white_label', 'fortiveax_white_label_section', array(
+        'label_for' => 'wl_hide_name',
+        'type'      => 'checkbox',
+    ) );
+    add_settings_field( 'wl_lock_pass', __( 'Lock Passphrase', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_white_label', 'fortiveax_white_label_section', array(
+        'label_for' => 'wl_lock_pass',
+        'type'      => 'text',
+    ) );
+    add_settings_field( 'wl_import_export', __( 'Export/Import JSON', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_white_label', 'fortiveax_white_label_section', array(
+        'label_for'   => 'wl_import_export',
+        'type'        => 'textarea',
+        'description' => __( 'Copy to export or paste JSON to import.', 'fortiveax' ),
+    ) );
+
     // Import/Export.
     add_settings_field( 'import_export', __( 'Import/Export Data', 'fortiveax' ), 'fortiveax_field_cb', 'fortiveax_import', 'fortiveax_import_section', array(
         'label_for'   => 'import_export',
@@ -317,6 +359,7 @@ function fortiveax_sanitize_options( $input ) {
             case 'schema_faq':
             case 'schema_service':
             case 'high_contrast':
+            case 'wl_hide_name':
                 $output[ $key ] = isset( $input[ $key ] ) ? 1 : 0;
                 break;
             case 'posts_per_page':
@@ -328,10 +371,15 @@ function fortiveax_sanitize_options( $input ) {
                 $output[ $key ]   = $color ? $color : $default;
                 break;
             case 'og_image':
+            case 'wl_support_url':
+            case 'wl_logo':
                 $output[ $key ] = isset( $input[ $key ] ) ? esc_url_raw( $input[ $key ] ) : $default;
                 break;
             case 'twitter_handle':
                 $output[ $key ] = isset( $input[ $key ] ) ? sanitize_text_field( $input[ $key ] ) : $default;
+                break;
+            case 'wl_support_email':
+                $output[ $key ] = isset( $input[ $key ] ) ? sanitize_email( $input[ $key ] ) : $default;
                 break;
             case 'import_export':
                 $output[ $key ] = isset( $input[ $key ] ) ? sanitize_textarea_field( $input[ $key ] ) : $default;
@@ -339,6 +387,12 @@ function fortiveax_sanitize_options( $input ) {
             case 'global_elements':
                 if ( ! empty( $input[ $key ] ) ) {
                     fx_global_elements_import( $input[ $key ] );
+                }
+                $output[ $key ] = '';
+                break;
+            case 'wl_import_export':
+                if ( ! empty( $input[ $key ] ) ) {
+                    fortiveax_whitelabel_import( $input[ $key ] );
                 }
                 $output[ $key ] = '';
                 break;
@@ -395,7 +449,7 @@ function fortiveax_field_cb( $args ) {
             );
             break;
         case 'textarea':
-            $display_value = ( 'global_elements' === $key ) ? fx_global_elements_export() : $value;
+            $display_value = ( 'global_elements' === $key ) ? fx_global_elements_export() : ( 'wl_import_export' === $key ? fortiveax_whitelabel_export() : $value );
             printf(
                 '<textarea id="%1$s" name="fortiveax_options[%1$s]" rows="5" cols="50">%2$s</textarea>',
                 esc_attr( $key ),
@@ -413,6 +467,41 @@ function fortiveax_field_cb( $args ) {
     if ( ! empty( $args['description'] ) ) {
         printf( '<p class="description">%s</p>', esc_html( $args['description'] ) );
     }
+}
+
+/**
+ * Export white label settings as JSON.
+ *
+ * @return string
+ */
+function fortiveax_whitelabel_export() {
+    $keys    = array( 'wl_brand_name', 'wl_logo', 'wl_support_url', 'wl_support_email', 'wl_hide_name', 'wl_lock_pass' );
+    $options = get_option( 'fortiveax_options', fortiveax_default_options() );
+    $data    = array();
+    foreach ( $keys as $key ) {
+        $data[ $key ] = isset( $options[ $key ] ) ? $options[ $key ] : '';
+    }
+    return wp_json_encode( $data );
+}
+
+/**
+ * Import white label settings from JSON.
+ *
+ * @param string $json JSON string.
+ */
+function fortiveax_whitelabel_import( $json ) {
+    $data = json_decode( $json, true );
+    if ( ! is_array( $data ) ) {
+        return;
+    }
+    $options = get_option( 'fortiveax_options', fortiveax_default_options() );
+    $keys    = array( 'wl_brand_name', 'wl_logo', 'wl_support_url', 'wl_support_email', 'wl_hide_name', 'wl_lock_pass' );
+    foreach ( $keys as $key ) {
+        if ( isset( $data[ $key ] ) ) {
+            $options[ $key ] = $data[ $key ];
+        }
+    }
+    update_option( 'fortiveax_options', $options );
 }
 
 
@@ -439,7 +528,7 @@ function fortiveax_options_page_html() {
         return;
     }
 
-    $tabs       = array(
+    $tabs = array(
         'branding'      => __( 'Branding', 'fortiveax' ),
         'header'        => __( 'Header', 'fortiveax' ),
         'footer'        => __( 'Footer', 'fortiveax' ),
@@ -457,18 +546,31 @@ function fortiveax_options_page_html() {
         'woocommerce'   => __( 'WooCommerce', 'fortiveax' ),
     );
 
+    $pass        = fxo( 'wl_lock_pass' );
+    $wl_unlocked = empty( $pass );
+    if ( ! $wl_unlocked && isset( $_GET['wl_pass'] ) ) {
+        $wl_unlocked = hash_equals( $pass, sanitize_text_field( wp_unslash( $_GET['wl_pass'] ) ) );
+    }
+    if ( $wl_unlocked ) {
+        $tabs['white_label'] = __( 'White Label', 'fortiveax' );
+    }
+
     $active_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'branding';
     if ( ! array_key_exists( $active_tab, $tabs ) ) {
         $active_tab = 'branding';
     }
     ?>
     <div class="wrap">
-        <h1><?php esc_html_e( 'FortiveaX Options', 'fortiveax' ); ?></h1>
+        <h1><?php echo esc_html( sprintf( __( '%s Options', 'fortiveax' ), fortiveax_get_brand_name() ) ); ?></h1>
         <h2 class="nav-tab-wrapper">
             <?php
             foreach ( $tabs as $id => $title ) {
                 $class = ( $id === $active_tab ) ? ' nav-tab-active' : '';
-                printf( '<a href="?page=fortiveax-options&tab=%1$s" class="nav-tab%3$s">%2$s</a>', esc_attr( $id ), esc_html( $title ), esc_attr( $class ) );
+                $url   = '?page=fortiveax-options&tab=' . $id;
+                if ( ! empty( $_GET['wl_pass'] ) ) {
+                    $url .= '&wl_pass=' . urlencode( sanitize_text_field( wp_unslash( $_GET['wl_pass'] ) ) );
+                }
+                printf( '<a href="%1$s" class="nav-tab%3$s">%2$s</a>', esc_attr( $url ), esc_html( $title ), esc_attr( $class ) );
             }
             ?>
         </h2>

@@ -13,9 +13,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Register the FortiveaX Dashboard page.
  */
 function fortiveax_register_dashboard_page() {
+    $brand = fortiveax_get_brand_name();
     add_menu_page(
-        __( 'FortiveaX Dashboard', 'fortiveax' ),
-        __( 'FortiveaX', 'fortiveax' ),
+        sprintf( __( '%s Dashboard', 'fortiveax' ), $brand ),
+        $brand,
         'manage_options',
         'fortiveax-dashboard',
         'fortiveax_render_dashboard_page'
