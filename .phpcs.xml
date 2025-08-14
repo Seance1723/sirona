@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<ruleset name="sirona-theme">
+    <description>PHPCS rules for the Sirona theme.</description>
+    <file>theme</file>
+    <exclude-pattern>theme/inc/*</exclude-pattern>
+    <exclude-pattern>theme/blocks/*</exclude-pattern>
+    <exclude-pattern>theme/blocks-pro/*</exclude-pattern>
+    <exclude-pattern>theme/dist/*</exclude-pattern>
+    <exclude-pattern>theme/demo-packs/*</exclude-pattern>
+    <exclude-pattern>theme/template-parts/*</exclude-pattern>
+    <exclude-pattern>theme/woocommerce/*</exclude-pattern>
+    <exclude-pattern>theme/index.php</exclude-pattern>
+    <rule ref="WordPress-Core"/>
+    <rule ref="WordPress-Docs"/>
+    <rule ref="WordPress-Extra"/>
+</ruleset>

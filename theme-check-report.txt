@@ -1,0 +1,5 @@
+Fatal error: Uncaught Error: Call to undefined function add_action() in /tmp/theme-check/theme-check.php:15
+Stack trace:
+#0 /tmp/theme-check/theme-check.php(78): ThemeCheckMain->__construct()
+#1 {main}
+  thrown in /tmp/theme-check/theme-check.php on line 15
