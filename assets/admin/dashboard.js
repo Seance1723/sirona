@@ -33,11 +33,19 @@
             createElement(
                 'ul',
                 null,
-                plugins.map(plugin =>
-                    createElement(
+                plugins.map(plugin => {
+                    const statusMap = {
+                        active: 'Active',
+                        inactive: 'Inactive',
+                        missing: 'Not Installed',
+                    };
+                    const statusText = statusMap[plugin.status] || '';
+                    return createElement(
                         'li',
                         { key: plugin.slug },
                         plugin.name,
+                        ' - ',
+                        statusText,
                         plugin.action && plugin.url
                             ? createElement(
                                   'a',
@@ -45,8 +53,8 @@
                                   plugin.action.charAt(0).toUpperCase() + plugin.action.slice(1)
                               )
                             : null
-                    )
-                )
+                    );
+                })
             ),
             createElement('h2', null, 'Quick Links'),
             createElement(

@@ -139,12 +139,14 @@ function fx_rest_get_plugins() {
             );
         }
 
+        $status = $active ? 'active' : ( $installed ? 'inactive' : 'missing' );
         $plugins[] = array(
             'name'      => $name,
             'slug'      => $slug,
             'required'  => ! empty( $plugin['required'] ),
             'installed' => $installed,
             'active'    => $active,
+            'status'    => $status,
             'action'    => $action,
             'url'       => $url,
         );

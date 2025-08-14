@@ -19,34 +19,40 @@ add_action( 'tgmpa_register', 'fx_register_plugins' );
 function fx_register_plugins() {
     $plugins = array(
         array(
-            'name'     => __( 'Contact Form 7', 'fx' ),
-            'slug'     => 'contact-form-7',
-            'required' => true,
+            'name'      => __( 'Contact Form 7', 'fx' ),
+            'slug'      => 'contact-form-7',
+            'file_path' => 'contact-form-7/wp-contact-form-7.php',
+            'required'  => true,
         ),
         array(
-            'name'     => __( 'One Click Demo Import', 'fx' ),
-            'slug'     => 'one-click-demo-import',
-            'required' => true,
+            'name'      => __( 'One Click Demo Import', 'fx' ),
+            'slug'      => 'one-click-demo-import',
+            'file_path' => 'one-click-demo-import/one-click-demo-import.php',
+            'required'  => true,
         ),
         array(
-            'name'     => __( 'Kirki', 'fx' ),
-            'slug'     => 'kirki',
-            'required' => true,
+            'name'      => __( 'Kirki', 'fx' ),
+            'slug'      => 'kirki',
+            'file_path' => 'kirki/kirki.php',
+            'required'  => true,
         ),
         array(
-            'name'     => __( 'Yoast SEO', 'fx' ),
-            'slug'     => 'wordpress-seo',
-            'required' => false,
+            'name'      => __( 'Yoast SEO', 'fx' ),
+            'slug'      => 'wordpress-seo',
+            'file_path' => 'wordpress-seo/wp-seo.php',
+            'required'  => false,
         ),
         array(
-            'name'     => __( 'WP Super Cache', 'fx' ),
-            'slug'     => 'wp-super-cache',
-            'required' => false,
+            'name'      => __( 'WP Super Cache', 'fx' ),
+            'slug'      => 'wp-super-cache',
+            'file_path' => 'wp-super-cache/wp-cache.php',
+            'required'  => false,
         ),
         array(
-            'name'     => __( 'WooCommerce', 'fx' ),
-            'slug'     => 'woocommerce',
-            'required' => false,
+            'name'      => __( 'WooCommerce', 'fx' ),
+            'slug'      => 'woocommerce',
+            'file_path' => 'woocommerce/woocommerce.php',
+            'required'  => false,
         ),
         // Example of bundling a plugin with the theme.
         // array(
@@ -74,13 +80,16 @@ function fx_register_plugins() {
         }
     );
 
+    $all_required_active = count( $active_required ) === count( $required_plugins );
+    $brand               = fx_get_brand_name();
+
     $config = array(
         'id'           => 'fx',
         'default_path' => get_theme_file_path( 'inc/plugins/' ),
-        'menu'         => 'tgmpa-install-plugins',
+        'menu'         => $all_required_active ? '' : 'tgmpa-install-plugins',
         'parent_slug'  => 'themes.php',
         'capability'   => 'edit_theme_options',
-        'has_notices'  => count( $active_required ) !== count( $required_plugins ),
+        'has_notices'  => ! $all_required_active,
         'dismissable'  => true,
         'is_automatic' => false,
         'message'      => '',
@@ -91,13 +100,13 @@ function fx_register_plugins() {
             'updating'                        => __( 'Updating Plugin: %s', 'fx' ),
             'oops'                            => __( 'Something went wrong with the plugin API.', 'fx' ),
             'notice_can_install_required'     => _n_noop(
-                'FortiveaX requires the following plugin: %1$s.',
-                'FortiveaX requires the following plugins: %1$s.',
+                sprintf( '%s requires the following plugin: %%1$s.', $brand ),
+                sprintf( '%s requires the following plugins: %%1$s.', $brand ),
                 'fx'
             ),
             'notice_can_install_recommended'  => _n_noop(
-                'FortiveaX recommends the following plugin: %1$s.',
-                'FortiveaX recommends the following plugins: %1$s.',
+                sprintf( '%s recommends the following plugin: %%1$s.', $brand ),
+                sprintf( '%s recommends the following plugins: %%1$s.', $brand ),
                 'fx'
             ),
             'notice_ask_to_update'            => _n_noop(
@@ -111,13 +120,13 @@ function fx_register_plugins() {
                 'fx'
             ),
             'notice_can_activate_required'    => _n_noop(
-                'The following required plugin is currently inactive: %1$s.',
-                'The following required plugins are currently inactive: %1$s.',
+                sprintf( 'The following required plugin is currently inactive: %%1$s.', $brand ),
+                sprintf( 'The following required plugins are currently inactive: %%1$s.', $brand ),
                 'fx'
             ),
             'notice_can_activate_recommended' => _n_noop(
-                'The following recommended plugin is currently inactive: %1$s.',
-                'The following recommended plugins are currently inactive: %1$s.',
+                sprintf( 'The following recommended plugin is currently inactive: %%1$s.', $brand ),
+                sprintf( 'The following recommended plugins are currently inactive: %%1$s.', $brand ),
                 'fx'
             ),
             'install_link'                    => _n_noop(
