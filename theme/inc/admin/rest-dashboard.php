@@ -104,12 +104,14 @@ function fx_rest_get_plugins() {
     $plugins = array();
 
     foreach ( $tgmpa->plugins as $slug => $plugin ) {
+        $slug  = sanitize_key( $slug );
+        $name  = isset( $plugin['name'] ) ? sanitize_text_field( $plugin['name'] ) : '';
         $installed = $tgmpa->is_plugin_installed( $slug );
         $active    = $tgmpa->is_plugin_active( $slug );
         $action    = '';
         $url       = '';
 
-        if ( ! $installed ) {
+        if ( ! $installed && current_user_can( 'install_plugins' ) ) {
             $action = 'install';
             $url    = wp_nonce_url(
                 add_query_arg(
@@ -122,7 +124,7 @@ function fx_rest_get_plugins() {
                 'tgmpa-install',
                 'tgmpa-nonce'
             );
-        } elseif ( ! $active && $tgmpa->can_plugin_activate( $slug ) ) {
+        } elseif ( ! $active && current_user_can( 'activate_plugins' ) && $tgmpa->can_plugin_activate( $slug ) ) {
             $action = 'activate';
             $url    = wp_nonce_url(
                 add_query_arg(
@@ -138,7 +140,7 @@ function fx_rest_get_plugins() {
         }
 
         $plugins[] = array(
-            'name'      => $plugin['name'],
+            'name'      => $name,
             'slug'      => $slug,
             'required'  => ! empty( $plugin['required'] ),
             'installed' => $installed,

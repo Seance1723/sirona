@@ -27,6 +27,10 @@ add_action( 'admin_menu', 'fx_hf_register_builder_page' );
  * Render the builder page.
  */
 function fx_hf_builder_page() {
+    if ( ! current_user_can( 'manage_options' ) ) {
+        return;
+    }
+
     echo '<div class="wrap"><h1>' . esc_html__( 'Header/Footer Builder', 'fx' ) . '</h1><div id="fx-hf-builder"></div></div>';
 }
 
@@ -62,9 +66,11 @@ function fx_hf_builder_assets( $hook ) {
         );
 
         $data = array(
-            'header'  => fx_hf_get_layouts( 'header' ),
-            'footer'  => fx_hf_get_layouts( 'footer' ),
-            'presets' => fx_hf_default_presets(),
+            'header'   => fx_hf_get_layouts( 'header' ),
+            'footer'   => fx_hf_get_layouts( 'footer' ),
+            'presets'  => fx_hf_default_presets(),
+            'nonce'    => wp_create_nonce( 'wp_rest' ),
+            'restBase' => esc_url_raw( rest_url( 'fx/v1' ) ),
         );
         wp_localize_script( 'fx-hf-builder', 'fxBuilderData', $data );
     }

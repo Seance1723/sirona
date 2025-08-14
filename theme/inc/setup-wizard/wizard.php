@@ -104,7 +104,7 @@ add_action( 'rest_api_init', 'fx_register_wizard_routes' );
  * @return WP_REST_Response|WP_Error
  */
 function fx_wizard_run_step( $request ) {
-    $step = $request['step'];
+    $step = isset( $request['step'] ) ? sanitize_key( $request['step'] ) : '';
 
     switch ( $step ) {
         case 'plugins':
@@ -130,12 +130,12 @@ function fx_wizard_run_step( $request ) {
  * Install and activate required plugins using TGMPA.
  */
 function fx_wizard_install_plugins() {
-    if ( ! class_exists( 'TGM_Plugin_Activation' ) ) {
+    if ( ! class_exists( 'TGM_Plugin_Activation' ) || ! current_user_can( 'install_plugins' ) ) {
         return;
     }
 
     $tgmpa   = TGM_Plugin_Activation::$instance;
-    $plugins = array_keys( $tgmpa->plugins );
+    $plugins = array_map( 'sanitize_key', array_keys( $tgmpa->plugins ) );
 
     if ( empty( $plugins ) ) {
         return;

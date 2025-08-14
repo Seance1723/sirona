@@ -16,6 +16,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return string
  */
 function fx_hf_option_name( $type ) {
+    $type = sanitize_key( $type );
+
     return 'footer' === $type ? 'fx_footer_layouts' : 'fx_header_layouts';
 }
 
@@ -26,6 +28,7 @@ function fx_hf_option_name( $type ) {
  * @return array
  */
 function fx_hf_get_layouts( $type ) {
+    $type    = sanitize_key( $type );
     $option  = fx_hf_option_name( $type );
     $layouts = get_option( $option, array() );
 
@@ -45,6 +48,8 @@ function fx_hf_get_layouts( $type ) {
  * @return array|null
  */
 function fx_hf_get_layout( $type, $slug ) {
+    $type    = sanitize_key( $type );
+    $slug    = sanitize_key( $slug );
     $layouts = fx_hf_get_layouts( $type );
     return isset( $layouts[ $slug ] ) ? $layouts[ $slug ] : null;
 }
@@ -57,7 +62,15 @@ function fx_hf_get_layout( $type, $slug ) {
  * @param array  $layout Layout data.
  */
 function fx_hf_save_layout( $type, $slug, $layout ) {
-    $layouts         = fx_hf_get_layouts( $type );
+    if ( ! current_user_can( 'manage_options' ) ) {
+        return;
+    }
+
+    $type   = sanitize_key( $type );
+    $slug   = sanitize_key( $slug );
+    $layout = is_array( $layout ) ? $layout : array();
+
+    $layouts          = fx_hf_get_layouts( $type );
     $layouts[ $slug ] = $layout;
     update_option( fx_hf_option_name( $type ), $layouts );
 }
