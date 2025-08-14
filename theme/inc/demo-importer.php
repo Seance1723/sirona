@@ -33,8 +33,11 @@ function fx_demo_import_admin_page() {
         return;
     }
 
+    $packs        = fx_get_demo_packs();
+    $selected_pack = isset( $_POST['fx_demo_pack'] ) ? sanitize_text_field( wp_unslash( $_POST['fx_demo_pack'] ) ) : key( $packs );
+
     if ( isset( $_POST['fx_import_demo'] ) && check_admin_referer( 'fx_import_demo_action', 'fx_import_demo_nonce' ) ) {
-        $imported = fx_import_demo_data();
+        fx_import_demo_data( $selected_pack );
         echo '<div class="updated"><p>' . esc_html__( 'Demo data imported.', 'fx' ) . '</p></div>';
     }
 
@@ -45,11 +48,19 @@ function fx_demo_import_admin_page() {
     ?>
     <div class="wrap">
         <h1><?php esc_html_e( 'Demo Import', 'fx' ); ?></h1>
-        <?php if ( get_option( 'fx_demo_imported' ) ) : ?>
-            <p><?php esc_html_e( 'Demo data has already been imported.', 'fx' ); ?></p>
+        <?php if ( fx_has_imported_demo() ) : ?>
+            <p><?php esc_html_e( 'Demo data has already been imported. You can safely re-run the importer; existing content will be skipped.', 'fx' ); ?></p>
         <?php endif; ?>
         <form method="post">
             <?php wp_nonce_field( 'fx_import_demo_action', 'fx_import_demo_nonce' ); ?>
+            <p>
+                <label for="fx_demo_pack"><?php esc_html_e( 'Demo Pack', 'fx' ); ?></label>
+                <select name="fx_demo_pack" id="fx_demo_pack">
+                    <?php foreach ( $packs as $slug => $label ) : ?>
+                        <option value="<?php echo esc_attr( $slug ); ?>" <?php selected( $selected_pack, $slug ); ?>><?php echo esc_html( $label ); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </p>
             <p><input type="submit" class="button button-primary" name="fx_import_demo" value="<?php esc_attr_e( 'Import Demo Data', 'fx' ); ?>" /></p>
         </form>
         <form method="post" style="margin-top:2em;">
@@ -61,21 +72,51 @@ function fx_demo_import_admin_page() {
 }
 
 /**
+ * Get available demo packs.
+ *
+ * @return array slug => label pairs.
+ */
+function fx_get_demo_packs() {
+    $packs   = array();
+    $base    = trailingslashit( get_theme_file_path( 'demo-packs' ) );
+    $folders = glob( $base . '*', GLOB_ONLYDIR );
+    if ( $folders ) {
+        foreach ( $folders as $folder ) {
+            $slug        = basename( $folder );
+            $packs[ $slug ] = ucwords( str_replace( array( '-', '_' ), ' ', $slug ) );
+        }
+    }
+    return $packs;
+}
+
+    /**
+ * Check if demo content has been imported.
+ *
+ * @return bool
+ */
+function fx_has_imported_demo() {
+    $posts = get_posts(
+        array(
+            'post_type'      => 'any',
+            'meta_key'       => '_fx_demo',
+            'posts_per_page' => 1,
+            'fields'         => 'ids',
+        )
+    );
+
+    return ! empty( $posts );
+}
+
+/**
  * Import demo data from the bundled demo pack.
  *
  * @return bool True on success.
  */
-function fx_import_demo_data() {
-    if ( get_option( 'fx_demo_imported' ) ) {
-        return false; // Already imported.
-    }
-
-    $demo_dir = trailingslashit( get_theme_file_path( 'demo-packs/default' ) );
+function fx_import_demo_data( $pack = 'default' ) {
+    $demo_dir       = trailingslashit( get_theme_file_path( 'demo-packs/' . $pack ) );
     $content_file    = $demo_dir . 'content.xml';
     $widgets_file    = $demo_dir . 'widgets.wie';
     $customizer_file = $demo_dir . 'customizer.json';
-
-    $imported_posts = array();
 
     // Import content from WXR file.
     if ( file_exists( $content_file ) ) {
@@ -84,17 +125,22 @@ function fx_import_demo_data() {
             foreach ( $xml->channel->item as $item ) {
                 $wp = $item->children( 'http://wordpress.org/export/1.2/' );
                 $content = $item->children( 'http://purl.org/rss/1.0/modules/content/' );
-                $post_type = (string) $wp->post_type;
-                $post_name = (string) $wp->post_name;
-                $post_title = (string) $item->title;
+                $post_type    = (string) $wp->post_type;
+                $post_name    = (string) $wp->post_name;
+                $post_title   = (string) $item->title;
                 $post_content = (string) $content->encoded;
 
-                if ( 'post' !== $post_type && 'page' !== $post_type ) {
-                    continue; // Only basic posts/pages.
-                }
-
-                // Skip if a post with this name already exists (idempotent).
-                if ( get_page_by_path( $post_name, OBJECT, $post_type ) ) {
+                // Skip if a post with this slug already exists.
+                $exists = get_posts(
+                    array(
+                        'name'           => $post_name,
+                        'post_type'      => $post_type,
+                        'post_status'    => 'any',
+                        'fields'         => 'ids',
+                        'posts_per_page' => 1,
+                    )
+                );
+                if ( $exists ) {
                     continue;
                 }
 
@@ -111,7 +157,6 @@ function fx_import_demo_data() {
 
                 if ( ! is_wp_error( $post_id ) ) {
                     add_post_meta( $post_id, '_fx_demo', 1 );
-                    $imported_posts[] = $post_id;
                 }
             }
         }
@@ -124,9 +169,24 @@ function fx_import_demo_data() {
             foreach ( $widgets as $sidebar_id => $widget_types ) {
                 foreach ( $widget_types as $widget_base_id => $settings_list ) {
                     foreach ( $settings_list as $settings ) {
-                        $option_name = 'widget_' . $widget_base_id;
-                        $all_instances = get_option( $option_name, array() );
-                        $all_instances[] = $settings + array( '_fx_demo' => 1 );
+                        $option_name    = 'widget_' . $widget_base_id;
+                        $all_instances  = get_option( $option_name, array() );
+                        $slug           = sanitize_title( isset( $settings['title'] ) ? $settings['title'] : $widget_base_id );
+
+                        $exists = false;
+                        foreach ( $all_instances as $instance ) {
+                            if ( isset( $instance['_fx_demo_slug'] ) && $instance['_fx_demo_slug'] === $slug ) {
+                                $exists = true;
+                                break;
+                            }
+                        }
+                        if ( $exists ) {
+                            continue;
+                        }
+
+                        $settings['_fx_demo']      = 1;
+                        $settings['_fx_demo_slug'] = $slug;
+                        $all_instances[]           = $settings;
                         end( $all_instances );
                         $new_instance_id = key( $all_instances );
                         update_option( $option_name, $all_instances );
@@ -153,9 +213,6 @@ function fx_import_demo_data() {
         }
     }
 
-    update_option( 'fx_demo_imported', 1 );
-    update_option( 'fx_imported_posts', $imported_posts );
-
     return true;
 }
 
@@ -163,13 +220,18 @@ function fx_import_demo_data() {
  * Remove all imported demo data and reset theme mods.
  */
 function fx_reset_demo_data() {
-    $imported_posts = get_option( 'fx_imported_posts', array() );
-    if ( $imported_posts ) {
-        foreach ( $imported_posts as $post_id ) {
-            wp_delete_post( $post_id, true );
-        }
+    $posts = get_posts(
+        array(
+            'post_type'      => 'any',
+            'meta_key'       => '_fx_demo',
+            'posts_per_page' => -1,
+            'fields'         => 'ids',
+        )
+    );
+
+    foreach ( $posts as $post_id ) {
+        wp_delete_post( $post_id, true );
     }
-    delete_option( 'fx_imported_posts' );
 
     // Remove widgets that were flagged as demo widgets.
     $sidebars_widgets = get_option( 'sidebars_widgets', array() );
@@ -192,5 +254,4 @@ function fx_reset_demo_data() {
 
     // Reset customizer options.
     remove_theme_mods();
-    delete_option( 'fx_demo_imported' );
 }
