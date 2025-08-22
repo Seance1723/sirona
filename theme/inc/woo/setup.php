@@ -29,7 +29,7 @@ add_action( 'after_setup_theme', 'fx_woo_setup' );
  * @return array
  */
 function fx_woo_body_classes( $classes ) {
-    if ( is_shop() || is_product_taxonomy() ) {
+    if ( function_exists( 'is_shop' ) && ( is_shop() || is_product_taxonomy() ) ) {
         $layout = fx_get_option( 'woo_layout', 'grid' );
         $classes[] = 'fx-woo-layout-' . sanitize_html_class( $layout );
 

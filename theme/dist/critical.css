@@ -1,4 +1,0 @@
-/* Critical CSS extracted for initial paint */
-.header { background-color: #fff; }
-.skip-link { position:absolute; top:-40px; left:0; background:#000; color:#fff; padding:0.5rem 1rem; z-index:1000; transition:top .3s; }
-.skip-link:focus { top:0; }
