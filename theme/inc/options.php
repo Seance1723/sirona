@@ -83,14 +83,18 @@ function fx_get_option( $key, $fallback = '' ) {
 }
 
 /**
- * Add options page to the Appearance menu.
+ * Add options page menus.
  */
 function fx_add_admin_menu() {
     $brand = fx_get_brand_name();
     $title = sprintf( __( '%s Options', 'fx' ), $brand );
+    // Add under Appearance for backward compatibility.
     add_theme_page( $title, $title, 'manage_options', 'fx-options', 'fx_options_page_html' );
+    // Also expose under the FortiveaX top-level menu.
+    add_submenu_page( 'fx-dashboard', $title, $title, 'manage_options', 'fx-options', 'fx_options_page_html' );
 }
-add_action( 'admin_menu', 'fx_add_admin_menu' );
+// Run after the dashboard menu is registered.
+add_action( 'admin_menu', 'fx_add_admin_menu', 11 );
 
 /**
  * Register settings, sections, and fields.
@@ -556,7 +560,12 @@ function fx_whitelabel_import( $json ) {
  * @param string $hook Current admin page.
  */
 function fx_admin_enqueue( $hook ) {
-    if ( 'appearance_page_fx-options' !== $hook ) {
+    $allowed = array(
+        'appearance_page_fx-options',
+        'fx-dashboard_page_fx-options',
+    );
+
+    if ( ! in_array( $hook, $allowed, true ) ) {
         return;
     }
 
