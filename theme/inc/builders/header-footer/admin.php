@@ -31,6 +31,10 @@ function fx_hf_builder_page() {
     if ( ! current_user_can( 'manage_options' ) ) {
         return;
     }
+    if ( ! function_exists( 'fx_features_enabled' ) || ! fx_features_enabled() ) {
+        echo '<div class="wrap"><h1>' . esc_html__( 'Header/Footer Builder', 'fx' ) . '</h1><p>' . esc_html__( 'Pro license required.', 'fx' ) . '</p></div>';
+        return;
+    }
 
     echo '<div class="wrap"><h1>' . esc_html__( 'Header/Footer Builder', 'fx' ) . '</h1><div id="fx-hf-builder"></div></div>';
 }
@@ -42,6 +46,10 @@ function fx_hf_builder_page() {
  */
 function fx_hf_builder_assets( $hook ) {
     if ( 'fx-dashboard_page_fx-hf-builder' !== $hook ) {
+        return;
+    }
+
+    if ( ! function_exists( 'fx_features_enabled' ) || ! fx_features_enabled() ) {
         return;
     }
 

@@ -1,5 +1,8 @@
 <?php
 function fx_render_post_grid( $attributes ) {
+    if ( ! function_exists( 'fx_features_enabled' ) || ! fx_features_enabled() ) {
+        return '<div class="wp-block-fx-post-grid"></div>';
+    }
     $defaults = [
         'postType'     => 'post',
         'order'        => 'DESC',

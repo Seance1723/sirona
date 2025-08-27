@@ -5,12 +5,17 @@
 
 // Display custom fields in menu item editor.
 function fx_megamenu_fields( $item_id, $item ) {
-    $enabled   = get_post_meta( $item_id, '_fx_mega_enabled', true );
-    $cols      = get_post_meta( $item_id, '_fx_mega_cols', true );
-    $bg_color  = get_post_meta( $item_id, '_fx_mega_bg_color', true );
-    $bg_image  = get_post_meta( $item_id, '_fx_mega_bg_image', true );
-    $width     = get_post_meta( $item_id, '_fx_mega_width', true );
-    $custom    = get_post_meta( $item_id, '_fx_mega_custom', true );
+    if ( ! function_exists( 'fx_features_enabled' ) || ! fx_features_enabled() ) {
+        echo '<p>' . esc_html__( 'Mega Menu is available in Pro.', 'fx' ) . '</p>';
+        return;
+    }
+
+    $enabled  = get_post_meta( $item_id, '_fx_mega_enabled', true );
+    $cols     = get_post_meta( $item_id, '_fx_mega_cols', true );
+    $bg_color = get_post_meta( $item_id, '_fx_mega_bg_color', true );
+    $bg_image = get_post_meta( $item_id, '_fx_mega_bg_image', true );
+    $width    = get_post_meta( $item_id, '_fx_mega_width', true );
+    $custom   = get_post_meta( $item_id, '_fx_mega_custom', true );
     ?>
     <p class="field-enable-mega description description-wide">
         <label for="edit-fx-mega-enabled-<?php echo esc_attr( $item_id ); ?>">

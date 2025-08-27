@@ -36,6 +36,10 @@ function fx_get_brand_logo() {
  * @return string
  */
 function fx_admin_footer_text( $text ) {
+    if ( ! function_exists( 'fx_features_enabled' ) || ! fx_features_enabled() ) {
+        return $text;
+    }
+
     $brand        = fx_get_brand_name();
     $support_url  = fx_get_option( 'wl_support_url' );
     $support_mail = fx_get_option( 'wl_support_email' );
@@ -59,6 +63,9 @@ add_filter( 'admin_footer_text', 'fx_admin_footer_text' );
  * Add a branded dashboard widget.
  */
 function fx_branding_dashboard_widget() {
+    if ( ! function_exists( 'fx_features_enabled' ) || ! fx_features_enabled() ) {
+        return;
+    }
     wp_add_dashboard_widget( 'fx_brand_widget', fx_get_brand_name(), 'fx_branding_dashboard_widget_output' );
 }
 add_action( 'wp_dashboard_setup', 'fx_branding_dashboard_widget' );
@@ -67,8 +74,13 @@ add_action( 'wp_dashboard_setup', 'fx_branding_dashboard_widget' );
  * Output for the branded dashboard widget.
  */
 function fx_branding_dashboard_widget_output() {
-    $logo        = fx_get_brand_logo();
-    $support_url = fx_get_option( 'wl_support_url' );
+    if ( ! function_exists( 'fx_features_enabled' ) || ! fx_features_enabled() ) {
+        echo '<p>' . esc_html__( 'Branding is available in Pro.', 'fx' ) . '</p>';
+        return;
+    }
+
+    $logo         = fx_get_brand_logo();
+    $support_url  = fx_get_option( 'wl_support_url' );
     $support_mail = fx_get_option( 'wl_support_email' );
 
     if ( $logo ) {

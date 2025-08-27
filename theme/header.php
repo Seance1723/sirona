@@ -62,15 +62,16 @@ if ( ! $header_rendered ) :
 		<?php if ( has_nav_menu( 'primary' ) ) : ?>
 			<nav class="fx-primary-navigation" aria-label="<?php esc_attr_e( 'Primary menu', 'fx' ); ?>">
 				<?php
-				wp_nav_menu(
-					array(
-						'theme_location' => 'primary',
-						'menu_id'        => 'primary-menu',
-						'container'      => false,
-						'walker'         => new FX_Mega_Menu_Walker(),
-					)
-				);
-				?>
+				$args = array(
+                    'theme_location' => 'primary',
+                    'menu_id'        => 'primary-menu',
+                    'container'      => false,
+                );
+                if ( function_exists( 'fx_features_enabled' ) && fx_features_enabled() ) {
+                    $args['walker'] = new FX_Mega_Menu_Walker();
+                }
+                wp_nav_menu( $args );
+                ?>
 			</nav>
 		<?php endif; ?>
 		<button class="fx-menu-toggle" aria-controls="fx-mobile-menu" aria-expanded="false">

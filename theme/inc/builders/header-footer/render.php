@@ -17,6 +17,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return bool Whether layout rendered.
  */
 function fx_hf_render_layout( $type, $variant ) {
+    if ( ! function_exists( 'fx_features_enabled' ) || ! fx_features_enabled() ) {
+        return false;
+    }
     $data = fx_hf_get_layout( $type, $variant );
     if ( ! $data ) {
         $presets = fx_hf_default_presets();

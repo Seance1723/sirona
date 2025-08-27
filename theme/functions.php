@@ -5,6 +5,10 @@
  * @package FortiveaX
  */
 
+if ( ! function_exists( 'fx_core_present' ) ) {
+    update_option( 'fortiveax_integrity_fail', 1 );
+}
+
 /**
  * Set up theme supports, menus, and editor styles.
  */

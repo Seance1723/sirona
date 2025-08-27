@@ -66,6 +66,10 @@ function fx_hf_save_layout( $type, $slug, $layout ) {
         return;
     }
 
+    if ( ! function_exists( 'fx_features_enabled' ) || ! fx_features_enabled() ) {
+        return;
+    }
+
     $type   = sanitize_key( $type );
     $slug   = sanitize_key( $slug );
     $layout = is_array( $layout ) ? $layout : array();
