@@ -583,6 +583,7 @@ function fx_options_page_html() {
         'branding'      => __( 'Branding', 'fx' ),
         'header'        => __( 'Header', 'fx' ),
         'footer'        => __( 'Footer', 'fx' ),
+        'social'        => __( 'Social', 'fx' ),
         'typography'    => __( 'Typography', 'fx' ),
         'colors'        => __( 'Colors', 'fx' ),
         'layout'        => __( 'Layout', 'fx' ),
@@ -611,27 +612,38 @@ function fx_options_page_html() {
         $active_tab = 'branding';
     }
     ?>
-    <div class="wrap">
+    <div class="wrap fx-options-wrap">
         <h1><?php echo esc_html( sprintf( __( '%s Options', 'fx' ), fx_get_brand_name() ) ); ?></h1>
-        <h2 class="nav-tab-wrapper">
-            <?php
-            foreach ( $tabs as $id => $title ) {
-                $class = ( $id === $active_tab ) ? ' nav-tab-active' : '';
-                $url   = '?page=fx-options&tab=' . $id;
-                if ( ! empty( $_GET['wl_pass'] ) ) {
-                    $url .= '&wl_pass=' . urlencode( sanitize_text_field( wp_unslash( $_GET['wl_pass'] ) ) );
+        <div class="fx-options-container">
+            <div class="fx-options-tabs">
+                <?php
+                foreach ( $tabs as $id => $title ) {
+                    $class = ( $id === $active_tab ) ? ' current' : '';
+                    $url   = '?page=fx-options&tab=' . $id;
+                    if ( ! empty( $_GET['wl_pass'] ) ) {
+                        $url .= '&wl_pass=' . urlencode( sanitize_text_field( wp_unslash( $_GET['wl_pass'] ) ) );
+                    }
+                    printf( '<a href="%1$s" class="fx-tab%3$s">%2$s</a>', esc_attr( $url ), esc_html( $title ), esc_attr( $class ) );
                 }
-                printf( '<a href="%1$s" class="nav-tab%3$s">%2$s</a>', esc_attr( $url ), esc_html( $title ), esc_attr( $class ) );
-            }
-            ?>
-        </h2>
-        <form method="post" action="options.php">
-            <?php
-            settings_fields( 'fx_options' );
-            do_settings_sections( 'fx_' . $active_tab );
-            submit_button();
-            ?>
-        </form>
+                ?>
+            </div>
+            <div class="fx-options-content">
+                <form method="post" action="options.php">
+                    <?php
+                    settings_fields( 'fx_options' );
+                    do_settings_sections( 'fx_' . $active_tab );
+                    submit_button();
+                    ?>
+                </form>
+            </div>
+        </div>
     </div>
+    <style>
+    .fx-options-container { display: flex; }
+    .fx-options-tabs { width: 220px; margin-right: 20px; }
+    .fx-options-tabs .fx-tab { display: block; padding: 8px 12px; text-decoration: none; border-left: 3px solid transparent; }
+    .fx-options-tabs .fx-tab.current { font-weight: 700; border-left-color: #0073aa; }
+    .fx-options-content { flex: 1; }
+    </style>
     <?php
 }
