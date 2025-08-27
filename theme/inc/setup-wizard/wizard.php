@@ -103,13 +103,8 @@ add_action( 'rest_api_init', 'fx_register_wizard_routes' );
  * @return array
  */
 function fx_setup_wizard_steps() {
-    $steps = array( 'plugins' );
+    $steps = array( 'login', 'plugins', 'import', 'setup' );
 
-    if ( fx_features_enabled( 'demo-import' ) ) {
-        $steps[] = 'import';
-    }
-
-    $steps[] = 'setup';
 
     /**
      * Filter the setup wizard steps.
@@ -135,6 +130,81 @@ function fx_wizard_run_step( $request ) {
     }
 
     switch ( $step ) {
+        case 'login':
+            $action = isset( $request['action'] ) ? sanitize_key( $request['action'] ) : 'status';
+
+            if ( 'logout' === $action ) {
+                delete_option( 'fortiveax_license_token' );
+                if ( function_exists( 'fx_core_run_checks' ) ) {
+                    fx_core_run_checks();
+                }
+                $status = get_option( 'fortiveax_license_status', array() );
+                return rest_ensure_response( array( 'success' => true, 'status' => $status ) );
+            }
+
+            if ( 'recheck' === $action ) {
+                if ( function_exists( 'fx_core_run_checks' ) ) {
+                    fx_core_run_checks();
+                }
+                $status = get_option( 'fortiveax_license_status', array() );
+                return rest_ensure_response( array( 'success' => true, 'status' => $status ) );
+            }
+
+            if ( 'login' === $action ) {
+                $email    = isset( $request['email'] ) ? sanitize_email( $request['email'] ) : '';
+                $password = isset( $request['password'] ) ? (string) $request['password'] : '';
+
+                $body = array(
+                    'email'    => $email,
+                    'password' => $password,
+                    'site_url' => site_url(),
+                    'theme'    => 'fortiveax',
+                    'version'  => wp_get_theme()->get( 'Version' ),
+                );
+
+                $response = wp_remote_post(
+                    'https://licenses.example.com/api/login',
+                    array(
+                        'body'    => wp_json_encode( $body ),
+                        'headers' => array( 'Content-Type' => 'application/json' ),
+                        'timeout' => 15,
+                    )
+                );
+
+                if ( is_wp_error( $response ) ) {
+                    return new WP_Error( 'login_request_failed', __( 'Could not connect to license server.', 'fx' ), array( 'status' => 500 ) );
+                }
+
+                $data = json_decode( wp_remote_retrieve_body( $response ), true );
+                if ( empty( $data['token'] ) ) {
+                    return new WP_Error( 'login_invalid', __( 'Invalid email or password.', 'fx' ), array( 'status' => 401 ) );
+                }
+
+                $claims = array(
+                    'iss' => defined( 'FX_JWT_ISS' ) ? FX_JWT_ISS : 'fortiveax',
+                    'aud' => defined( 'FX_JWT_AUD' ) ? FX_JWT_AUD : wp_parse_url( site_url(), PHP_URL_HOST ),
+                );
+
+                $verify = fx_jwt_verify_rs256( $data['token'], FX_RSA_PUBLIC, $claims );
+                if ( is_wp_error( $verify ) ) {
+                    return new WP_Error( 'login_verify', __( 'Token verification failed.', 'fx' ), array( 'status' => 400 ) );
+                }
+
+                update_option( 'fortiveax_license_token', $data['token'] );
+                if ( function_exists( 'fx_core_run_checks' ) ) {
+                    fx_core_run_checks();
+                }
+                $status = get_option( 'fortiveax_license_status', array() );
+                if ( isset( $verify['plan'] ) ) {
+                    $status['plan'] = $verify['plan'];
+                } elseif ( isset( $data['plan'] ) ) {
+                    $status['plan'] = $data['plan'];
+                }
+                return rest_ensure_response( array( 'success' => true, 'status' => $status ) );
+            }
+
+            $status = get_option( 'fortiveax_license_status', array() );
+            return rest_ensure_response( array( 'success' => true, 'status' => $status ) );
         case 'plugins':
             fx_wizard_install_plugins();
             break;
@@ -227,7 +297,7 @@ function fx_setup_wizard_maybe_redirect() {
     delete_option( 'fx_setup_wizard_redirect' );
 
     if ( wp_verify_nonce( $nonce, 'fx_setup_wizard' ) ) {
-        wp_safe_redirect( admin_url( 'admin.php?page=fx-setup&_fw_nonce=' . $nonce ) );
+        wp_safe_redirect( admin_url( 'admin.php?page=fx-setup&step=login&_fw_nonce=' . $nonce ) );
         exit;
     }
 }

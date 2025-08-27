@@ -1,9 +1,32 @@
-.fx-wizard-app {
+fx-wizard-app {
     .fx-wizard-step {
         margin-bottom: 20px;
     }
     .status.done {
         color: green;
         font-weight: bold;
+    }
+    .status.locked {
+        color: #999;
+        font-weight: bold;
+    }
+    .fx-login-form {
+        input {
+            display: block;
+            margin-bottom: 10px;
+            max-width: 300px;
+        }
+    }
+    .fx-login-actions {
+        .button {
+            margin-right: 10px;
+        }
+    }
+    .fx-wizard-error {
+        color: #d63638;
+    }
+    .privacy-note {
+        font-size: 12px;
+        color: #555;
     }
 }
