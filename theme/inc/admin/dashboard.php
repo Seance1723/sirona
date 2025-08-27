@@ -82,3 +82,24 @@ function fx_dashboard_assets( $hook ) {
     }
 }
 add_action( 'admin_enqueue_scripts', 'fx_dashboard_assets' );
+
+/**
+ * Redirect clean admin URLs to their respective pages.
+ */
+function fx_admin_pretty_url_redirects() {
+    if ( ! is_admin() ) {
+        return;
+    }
+
+    $path = trim( wp_parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ), '/' );
+    $map  = array(
+        'wp-admin/fx-demo-import' => 'fx-demo-import',
+        'wp-admin/fx-setup'       => 'fx-setup',
+    );
+
+    if ( isset( $map[ $path ] ) ) {
+        wp_safe_redirect( admin_url( 'admin.php?page=' . $map[ $path ] ) );
+        exit;
+    }
+}
+add_action( 'admin_init', 'fx_admin_pretty_url_redirects' );

@@ -45,8 +45,8 @@ function fx_hf_builder_assets( $hook ) {
         return;
     }
 
-    $asset_path = get_theme_file_path( '../assets/admin' );
-    $asset_url  = get_theme_file_uri( '../assets/admin' );
+    $asset_path = get_theme_file_path( 'assets/admin' );
+    $asset_url  = get_theme_file_uri( 'assets/admin' );
 
     if ( file_exists( $asset_path . '/hf-builder.css' ) ) {
         wp_enqueue_style(

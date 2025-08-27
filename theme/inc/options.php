@@ -618,12 +618,13 @@ function fx_options_page_html() {
             <div class="fx-options-tabs">
                 <?php
                 foreach ( $tabs as $id => $title ) {
-                    $class = ( $id === $active_tab ) ? ' current' : '';
-                    $url   = '?page=fx-options&tab=' . $id;
+                    $class    = ( $id === $active_tab ) ? ' current' : '';
+                    $base_url = menu_page_url( 'fx-options', false );
+                    $url      = add_query_arg( 'tab', $id, $base_url );
                     if ( ! empty( $_GET['wl_pass'] ) ) {
-                        $url .= '&wl_pass=' . urlencode( sanitize_text_field( wp_unslash( $_GET['wl_pass'] ) ) );
+                        $url = add_query_arg( 'wl_pass', sanitize_text_field( wp_unslash( $_GET['wl_pass'] ) ), $url );
                     }
-                    printf( '<a href="%1$s" class="fx-tab%3$s">%2$s</a>', esc_attr( $url ), esc_html( $title ), esc_attr( $class ) );
+                    printf( '<a href="%1$s" class="fx-tab%3$s">%2$s</a>', esc_url( $url ), esc_html( $title ), esc_attr( $class ) );
                 }
                 ?>
             </div>
