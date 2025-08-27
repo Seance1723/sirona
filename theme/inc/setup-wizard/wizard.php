@@ -98,6 +98,28 @@ function fx_register_wizard_routes() {
 add_action( 'rest_api_init', 'fx_register_wizard_routes' );
 
 /**
+ * Retrieve list of wizard steps.
+ *
+ * @return array
+ */
+function fx_setup_wizard_steps() {
+    $steps = array( 'plugins' );
+
+    if ( fx_features_enabled( 'demo-import' ) ) {
+        $steps[] = 'import';
+    }
+
+    $steps[] = 'setup';
+
+    /**
+     * Filter the setup wizard steps.
+     *
+     * @param array $steps Steps array.
+     */
+    return apply_filters( 'fx_setup_wizard_steps', $steps );
+}
+
+/**
  * Execute a setup wizard step.
  *
  * @param WP_REST_Request $request Request object.
@@ -105,7 +127,12 @@ add_action( 'rest_api_init', 'fx_register_wizard_routes' );
  * @return WP_REST_Response|WP_Error
  */
 function fx_wizard_run_step( $request ) {
-    $step = isset( $request['step'] ) ? sanitize_key( $request['step'] ) : '';
+    $step  = isset( $request['step'] ) ? sanitize_key( $request['step'] ) : '';
+    $steps = fx_setup_wizard_steps();
+
+    if ( ! in_array( $step, $steps, true ) ) {
+        return new WP_Error( 'invalid_step', __( 'Invalid wizard step.', 'fortiveax' ), array( 'status' => 400 ) );
+    }
 
     switch ( $step ) {
         case 'plugins':
@@ -120,8 +147,6 @@ function fx_wizard_run_step( $request ) {
             fx_wizard_basic_setup();
             update_option( 'fx_wizard_complete', 1 );
             break;
-        default:
-            return new WP_Error( 'invalid_step', __( 'Invalid wizard step.', 'fx' ), array( 'status' => 400 ) );
     }
 
     return rest_ensure_response( array( 'success' => true ) );

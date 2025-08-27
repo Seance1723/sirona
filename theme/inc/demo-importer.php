@@ -15,6 +15,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Register the Demo Import admin page under the FortiveaX dashboard.
  */
 function fx_demo_import_admin_menu() {
+    if ( ! fx_features_enabled( 'demo-import' ) ) {
+        return;
+    }
+
     add_submenu_page(
         'fx-dashboard',
         __( 'Demo Import', 'fx' ),
@@ -30,7 +34,7 @@ add_action( 'admin_menu', 'fx_demo_import_admin_menu' );
  * Render the Demo Import admin page.
  */
 function fx_demo_import_admin_page() {
-    if ( ! current_user_can( 'manage_options' ) ) {
+    if ( ! current_user_can( 'manage_options' ) || ! fx_features_enabled( 'demo-import' ) ) {
         return;
     }
 
@@ -114,6 +118,10 @@ function fx_has_imported_demo() {
  * @return bool True on success.
  */
 function fx_import_demo_data( $pack = 'default' ) {
+    if ( ! fx_features_enabled( 'demo-import' ) ) {
+        return false;
+    }
+    
     $demo_dir       = trailingslashit( get_theme_file_path( 'demo-packs/' . $pack ) );
     $content_file    = $demo_dir . 'content.xml';
     $widgets_file    = $demo_dir . 'widgets.wie';
