@@ -14,10 +14,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Register Setup Wizard page under Appearance.
+ * Register Setup Wizard page under the FortiveaX dashboard.
  */
 function fx_register_setup_wizard_page() {
-    add_theme_page(
+    add_submenu_page(
+        'fx-dashboard',
         __( 'Setup Wizard', 'fx' ),
         __( 'Setup Wizard', 'fx' ),
         'manage_options',
@@ -44,7 +45,7 @@ function fx_render_setup_wizard_page() {
  * @param string $hook Current admin page hook.
  */
 function fx_setup_wizard_assets( $hook ) {
-    if ( 'appearance_page_fx-setup' !== $hook ) {
+    if ( 'fx-dashboard_page_fx-setup' !== $hook ) {
         return;
     }
 
@@ -201,7 +202,7 @@ function fx_setup_wizard_maybe_redirect() {
     delete_option( 'fx_setup_wizard_redirect' );
 
     if ( wp_verify_nonce( $nonce, 'fx_setup_wizard' ) ) {
-        wp_safe_redirect( admin_url( 'themes.php?page=fx-setup&_fw_nonce=' . $nonce ) );
+        wp_safe_redirect( admin_url( 'admin.php?page=fx-setup&_fw_nonce=' . $nonce ) );
         exit;
     }
 }

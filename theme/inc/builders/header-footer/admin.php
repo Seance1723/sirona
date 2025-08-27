@@ -10,10 +10,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Register builder page.
+ * Register builder page under the FortiveaX dashboard.
  */
 function fx_hf_register_builder_page() {
-    add_theme_page(
+    add_submenu_page(
+        'fx-dashboard',
         __( 'Header/Footer Builder', 'fx' ),
         __( 'Header/Footer Builder', 'fx' ),
         'manage_options',
@@ -40,7 +41,7 @@ function fx_hf_builder_page() {
  * @param string $hook Current admin page hook.
  */
 function fx_hf_builder_assets( $hook ) {
-    if ( 'appearance_page_fx-hf-builder' !== $hook ) {
+    if ( 'fx-dashboard_page_fx-hf-builder' !== $hook ) {
         return;
     }
 

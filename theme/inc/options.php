@@ -88,9 +88,7 @@ function fx_get_option( $key, $fallback = '' ) {
 function fx_add_admin_menu() {
     $brand = fx_get_brand_name();
     $title = sprintf( __( '%s Options', 'fx' ), $brand );
-    // Add under Appearance for backward compatibility.
-    add_theme_page( $title, $title, 'manage_options', 'fx-options', 'fx_options_page_html' );
-    // Also expose under the FortiveaX top-level menu.
+    // Expose under the FortiveaX top-level menu.
     add_submenu_page( 'fx-dashboard', $title, $title, 'manage_options', 'fx-options', 'fx_options_page_html' );
 }
 // Run after the dashboard menu is registered.
@@ -561,7 +559,6 @@ function fx_whitelabel_import( $json ) {
  */
 function fx_admin_enqueue( $hook ) {
     $allowed = array(
-        'appearance_page_fx-options',
         'fx-dashboard_page_fx-options',
     );
 

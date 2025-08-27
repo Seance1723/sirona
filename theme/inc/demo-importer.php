@@ -12,10 +12,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Register the Demo Import admin page.
+ * Register the Demo Import admin page under the FortiveaX dashboard.
  */
 function fx_demo_import_admin_menu() {
-    add_theme_page(
+    add_submenu_page(
+        'fx-dashboard',
         __( 'Demo Import', 'fx' ),
         __( 'Demo Import', 'fx' ),
         'manage_options',

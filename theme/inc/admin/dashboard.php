@@ -70,9 +70,9 @@ function fx_dashboard_assets( $hook ) {
             'nonce'    => wp_create_nonce( 'wp_rest' ),
             'restBase' => esc_url_raw( rest_url( 'fx/v1' ) ),
             'links'    => array(
-                'themeOptions' => admin_url( 'customize.php' ),
-                'demoImport'   => admin_url( 'themes.php?page=one-click-demo-import' ),
-                'setupWizard'  => admin_url( 'themes.php?page=fx-setup' ),
+                'themeOptions' => admin_url( 'admin.php?page=fx-options' ),
+                'demoImport'   => admin_url( 'admin.php?page=fx-demo-import' ),
+                'setupWizard'  => admin_url( 'admin.php?page=fx-setup' ),
                 'docs'         => '#',
             ),
             'wizardComplete' => (bool) get_option( 'fx_wizard_complete' ),
