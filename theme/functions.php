@@ -260,6 +260,10 @@ add_action( 'init', 'fx_performance_setup' );
 
 add_action( 'wp_enqueue_scripts', 'fx_enqueue_assets' );
 require_once get_theme_file_path( 'inc/licensing/license.php' );
+require_once get_theme_file_path( 'inc/licensing/validators.php' );
+if ( is_admin() ) {
+    require_once get_theme_file_path( 'inc/licensing/admin-ui.php' );
+}
 require_once get_theme_file_path( 'inc/integrity/features.php' );
 add_action( 'init', array( fx_license(), 'schedule_cron' ) );
 require_once get_theme_file_path( 'inc/options.php' );
