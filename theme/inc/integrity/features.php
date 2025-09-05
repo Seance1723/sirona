@@ -10,19 +10,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Determine if a feature is enabled.
+ * Determine if features are enabled.
  *
- * @param string $feature Feature slug.
+ * Declared only if the MU plugin didn't already provide it.
+ * Matches the zero-argument usage across the theme.
+ *
  * @return bool
  */
-function fx_features_enabled( $feature ) {
-	$enabled = fx_license()->is_active();
+if ( ! function_exists( 'fx_features_enabled' ) ) {
+        function fx_features_enabled() {
+                $enabled = function_exists( 'fx_license' ) ? fx_license()->is_active() : false;
 
-	/**
-	 * Filter the feature enabled state.
-	 *
-	 * @param bool   $enabled Whether the feature is enabled.
-	 * @param string $feature Feature slug.
-	 */
-	return apply_filters( 'fx_features_enabled', $enabled, $feature );
+                /**
+                 * Filter the feature enabled state.
+                 *
+                 * @param bool        $enabled Whether the feature is enabled.
+                 * @param string|null $feature Optional feature slug (unused here).
+                 */
+                return apply_filters( 'fx_features_enabled', $enabled, null );
+        }
 }
