@@ -28,6 +28,9 @@ function fx_hf_option_name( $type ) {
  * @return array
  */
 function fx_hf_get_layouts( $type ) {
+    if ( ! function_exists( 'fx_features_enabled' ) || ! fx_features_enabled() ) {
+        return array();
+    }
     $type    = sanitize_key( $type );
     $option  = fx_hf_option_name( $type );
     $layouts = get_option( $option, array() );
@@ -48,6 +51,9 @@ function fx_hf_get_layouts( $type ) {
  * @return array|null
  */
 function fx_hf_get_layout( $type, $slug ) {
+    if ( ! function_exists( 'fx_features_enabled' ) || ! fx_features_enabled() ) {
+        return null;
+    }
     $type    = sanitize_key( $type );
     $slug    = sanitize_key( $slug );
     $layouts = fx_hf_get_layouts( $type );

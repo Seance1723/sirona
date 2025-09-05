@@ -22,6 +22,10 @@ function fx_woo_setup() {
 }
 add_action( 'after_setup_theme', 'fx_woo_setup' );
 
+if ( function_exists( 'fx_features_enabled' ) && ! fx_features_enabled() ) {
+    return;
+}
+
 /**
  * Append layout and column classes based on options.
  *
@@ -29,9 +33,6 @@ add_action( 'after_setup_theme', 'fx_woo_setup' );
  * @return array
  */
 function fx_woo_body_classes( $classes ) {
-    if ( ! function_exists( 'fx_features_enabled' ) || ! fx_features_enabled() ) {
-        return $classes;
-    }
 
     if ( function_exists( 'is_shop' ) && ( is_shop() || is_product_taxonomy() ) ) {
         $layout = fx_get_option( 'woo_layout', 'grid' );
@@ -55,9 +56,6 @@ add_filter( 'body_class', 'fx_woo_body_classes' );
  * Enqueue front‑end script for Woo features.
  */
 function fx_woo_scripts() {
-    if ( ! function_exists( 'fx_features_enabled' ) || ! fx_features_enabled() ) {
-        return;
-    }
 
     if ( class_exists( 'WooCommerce' ) ) {
         $dist_path = get_theme_file_uri( 'dist' );
@@ -70,9 +68,6 @@ add_action( 'wp_enqueue_scripts', 'fx_woo_scripts' );
  * Display grid/list layout toggle before shop loop.
  */
 function fx_woo_layout_toggle_markup() {
-    if ( ! function_exists( 'fx_features_enabled' ) || ! fx_features_enabled() ) {
-        return;
-    }
     
     if ( ! fx_get_option( 'woo_layout_toggle' ) ) {
         return;

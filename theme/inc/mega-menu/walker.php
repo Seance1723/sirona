@@ -2,6 +2,11 @@
 /**
  * Mega menu walker.
  */
+
+if ( function_exists( 'fx_features_enabled' ) && ! fx_features_enabled() ) {
+    return;
+}
+
 class FX_Mega_Menu_Walker extends Walker_Nav_Menu {
     private $mega_enabled = false;
     private $mega_cols = 0;

@@ -3,12 +3,13 @@
  * Mega menu fields for nav menu items.
  */
 
+if ( function_exists( 'fx_features_enabled' ) && ! fx_features_enabled() ) {
+    require_once get_theme_file_path( 'inc/pro-locked/ui.php' );
+    return;
+}
+
 // Display custom fields in menu item editor.
 function fx_megamenu_fields( $item_id, $item ) {
-    if ( ! function_exists( 'fx_features_enabled' ) || ! fx_features_enabled() ) {
-        echo '<p>' . esc_html__( 'Mega Menu is available in Pro.', 'fx' ) . '</p>';
-        return;
-    }
 
     $enabled  = get_post_meta( $item_id, '_fx_mega_enabled', true );
     $cols     = get_post_meta( $item_id, '_fx_mega_cols', true );
