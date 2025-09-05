@@ -70,6 +70,7 @@
         };
 
         const showRepair = info.active && (info.integrity_fail || info.has_core === false);
+        const showThemeUpdate = !!info.core_requires_theme_update;
 
         if ( info.active ) {
             return createElement(
@@ -113,6 +114,20 @@
                     )
                 ) : null,
                 error && createElement('p', { className: 'fx-license-error' }, error),
+                showThemeUpdate && createElement('div', { className: 'notice inline notice-warning' },
+                    createElement('p', null,
+                        'Core update requires a newer theme version',
+                        (info.required_theme ? ' (min ' + info.required_theme + ')' : ''), '. ',
+                        'Current: ', info.theme_version || 'unknown'
+                    ),
+                    createElement('button', {
+                        className: 'button',
+                        onClick: () => { setStatus('running'); setError(''); apiFetch({ path: fxLicense.restBase + '/integrity/repair', method: 'POST' })
+                            .then((res) => { setInfo(res || {}); setStatus('idle'); })
+                            .catch((err) => { setStatus('idle'); setError(err.message || 'Error'); }); },
+                        disabled: status === 'running'
+                    }, status === 'running' ? 'Updating…' : 'Update Theme')
+                ),
                 createElement(
                     'div',
                     { className: 'fx-license-actions' },

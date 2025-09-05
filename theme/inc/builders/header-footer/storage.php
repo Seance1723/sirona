@@ -78,11 +78,45 @@ function fx_hf_save_layout( $type, $slug, $layout ) {
 
     $type   = sanitize_key( $type );
     $slug   = sanitize_key( $slug );
-    $layout = is_array( $layout ) ? $layout : array();
+    $layout = is_array( $layout ) ? fx_hf_sanitize_layout( $layout ) : array();
 
     $layouts          = fx_hf_get_layouts( $type );
     $layouts[ $slug ] = $layout;
     update_option( fx_hf_option_name( $type ), $layouts );
+}
+
+/**
+ * Sanitize header/footer layout structure.
+ *
+ * @param array $layout Raw layout array.
+ * @return array
+ */
+function fx_hf_sanitize_layout( $layout ) {
+    $out = array(
+        'sticky'      => ! empty( $layout['sticky'] ),
+        'transparent' => ! empty( $layout['transparent'] ),
+        'rows'        => array(),
+    );
+
+    if ( ! empty( $layout['rows'] ) && is_array( $layout['rows'] ) ) {
+        foreach ( $layout['rows'] as $row ) {
+            $row_out = array( 'cols' => array() );
+            if ( ! empty( $row['cols'] ) && is_array( $row['cols'] ) ) {
+                foreach ( $row['cols'] as $col ) {
+                    $elements = array();
+                    if ( ! empty( $col['elements'] ) && is_array( $col['elements'] ) ) {
+                        foreach ( $col['elements'] as $el ) {
+                            $elements[] = sanitize_key( $el );
+                        }
+                    }
+                    $row_out['cols'][] = array( 'elements' => $elements );
+                }
+            }
+            $out['rows'][] = $row_out;
+        }
+    }
+
+    return $out;
 }
 
 /**

@@ -114,6 +114,9 @@ function fx_register_license_routes() {
                     $status = fx_license()->status();
                     $status['has_core']       = function_exists( 'fx_core_present' ) ? (bool) fx_core_present() : false;
                     $status['integrity_fail'] = (bool) get_option( 'fortiveax_integrity_fail', 0 ) || ! $status['has_core'];
+                    $status['theme_version']  = wp_get_theme()->get( 'Version' );
+                    $status['required_theme'] = get_option( 'fortiveax_required_theme_version', '' );
+                    $status['core_requires_theme_update'] = (bool) get_option( 'fortiveax_core_requires_theme_update', 0 );
                     if ( function_exists( 'fx_integrity_get_diff' ) ) {
                         $status['integrity'] = fx_integrity_get_diff();
                     }
@@ -133,6 +136,9 @@ function fx_register_license_routes() {
                     }
                     $status['has_core']       = function_exists( 'fx_core_present' ) ? (bool) fx_core_present() : false;
                     $status['integrity_fail'] = (bool) get_option( 'fortiveax_integrity_fail', 0 ) || ! $status['has_core'];
+                    $status['theme_version']  = wp_get_theme()->get( 'Version' );
+                    $status['required_theme'] = get_option( 'fortiveax_required_theme_version', '' );
+                    $status['core_requires_theme_update'] = (bool) get_option( 'fortiveax_core_requires_theme_update', 0 );
                     if ( function_exists( 'fx_integrity_get_diff' ) ) {
                         $status['integrity'] = fx_integrity_get_diff();
                     }
@@ -157,6 +163,9 @@ function fx_register_license_routes() {
                 }
                 $status['has_core']       = function_exists( 'fx_core_present' ) ? (bool) fx_core_present() : false;
                 $status['integrity_fail'] = (bool) get_option( 'fortiveax_integrity_fail', 0 ) || ! $status['has_core'];
+                $status['theme_version']  = wp_get_theme()->get( 'Version' );
+                $status['required_theme'] = get_option( 'fortiveax_required_theme_version', '' );
+                $status['core_requires_theme_update'] = (bool) get_option( 'fortiveax_core_requires_theme_update', 0 );
                 return rest_ensure_response( $status );
             },
         )
@@ -175,6 +184,9 @@ function fx_register_license_routes() {
                 $status                   = fx_license()->status();
                 $status['has_core']       = function_exists( 'fx_core_present' ) ? (bool) fx_core_present() : false;
                 $status['integrity_fail'] = (bool) get_option( 'fortiveax_integrity_fail', 0 ) || ! $status['has_core'];
+                $status['theme_version']  = wp_get_theme()->get( 'Version' );
+                $status['required_theme'] = get_option( 'fortiveax_required_theme_version', '' );
+                $status['core_requires_theme_update'] = (bool) get_option( 'fortiveax_core_requires_theme_update', 0 );
                 if ( function_exists( 'fx_integrity_get_diff' ) ) {
                     $status['integrity'] = fx_integrity_get_diff();
                 }

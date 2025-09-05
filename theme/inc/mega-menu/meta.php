@@ -18,6 +18,7 @@ function fx_megamenu_fields( $item_id, $item ) {
     $width    = get_post_meta( $item_id, '_fx_mega_width', true );
     $custom   = get_post_meta( $item_id, '_fx_mega_custom', true );
     ?>
+    <?php wp_nonce_field( 'fx_megamenu_save', 'fx_megamenu_nonce' ); ?>
     <p class="field-enable-mega description description-wide">
         <label for="edit-fx-mega-enabled-<?php echo esc_attr( $item_id ); ?>">
             <input type="checkbox" id="edit-fx-mega-enabled-<?php echo esc_attr( $item_id ); ?>" name="fx_mega_enabled[<?php echo esc_attr( $item_id ); ?>]" value="1" <?php checked( $enabled, '1' ); ?> />
@@ -64,6 +65,13 @@ add_action( 'wp_nav_menu_item_custom_fields', 'fx_megamenu_fields', 10, 2 );
 
 // Save meta on menu item update.
 function fx_save_megamenu_fields( $menu_id, $menu_item_db_id ) {
+    if ( ! current_user_can( 'edit_theme_options' ) ) {
+        return;
+    }
+    if ( ! isset( $_POST['fx_megamenu_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['fx_megamenu_nonce'] ) ), 'fx_megamenu_save' ) ) {
+        return;
+    }
+
     $fields = array(
         'fx_mega_enabled' => '_fx_mega_enabled',
         'fx_mega_cols'    => '_fx_mega_cols',
@@ -72,9 +80,27 @@ function fx_save_megamenu_fields( $menu_id, $menu_item_db_id ) {
         'fx_mega_width'   => '_fx_mega_width',
         'fx_mega_custom'  => '_fx_mega_custom',
     );
-    foreach ( $fields as $post_key => $meta_key ) {
-        $value = isset( $_POST[ $post_key ][ $menu_item_db_id ] ) ? $_POST[ $post_key ][ $menu_item_db_id ] : '';
-        if ( $value !== '' ) {
+
+    // Sanitize values per-field.
+    $enabled  = isset( $_POST['fx_mega_enabled'][ $menu_item_db_id ] ) ? '1' : '';
+    $cols_raw = isset( $_POST['fx_mega_cols'][ $menu_item_db_id ] ) ? wp_unslash( $_POST['fx_mega_cols'][ $menu_item_db_id ] ) : '';
+    $cols     = $cols_raw !== '' ? max( 2, min( 6, absint( $cols_raw ) ) ) : '';
+    $bg_color = isset( $_POST['fx_mega_bg_color'][ $menu_item_db_id ] ) ? sanitize_hex_color( wp_unslash( $_POST['fx_mega_bg_color'][ $menu_item_db_id ] ) ) : '';
+    $bg_img   = isset( $_POST['fx_mega_bg_image'][ $menu_item_db_id ] ) ? esc_url_raw( wp_unslash( $_POST['fx_mega_bg_image'][ $menu_item_db_id ] ) ) : '';
+    $width    = isset( $_POST['fx_mega_width'][ $menu_item_db_id ] ) ? sanitize_text_field( wp_unslash( $_POST['fx_mega_width'][ $menu_item_db_id ] ) ) : '';
+    $custom   = isset( $_POST['fx_mega_custom'][ $menu_item_db_id ] ) ? wp_kses_post( wp_unslash( $_POST['fx_mega_custom'][ $menu_item_db_id ] ) ) : '';
+
+    $map = array(
+        '_fx_mega_enabled'  => $enabled,
+        '_fx_mega_cols'     => $cols,
+        '_fx_mega_bg_color' => $bg_color ? $bg_color : '',
+        '_fx_mega_bg_image' => $bg_img,
+        '_fx_mega_width'    => $width,
+        '_fx_mega_custom'   => $custom,
+    );
+
+    foreach ( $map as $meta_key => $value ) {
+        if ( '' !== $value && null !== $value ) {
             update_post_meta( $menu_item_db_id, $meta_key, $value );
         } else {
             delete_post_meta( $menu_item_db_id, $meta_key );

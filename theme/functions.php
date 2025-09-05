@@ -299,5 +299,33 @@ if ( is_admin() ) {
 }
 require_once get_theme_file_path( 'inc/mega-menu/walker.php' );
 if ( is_admin() ) {
-	require_once get_theme_file_path( 'inc/mega-menu/meta.php' );
+    require_once get_theme_file_path( 'inc/mega-menu/meta.php' );
 }
+
+/**
+ * Check compatibility with MU core and flag if theme update is required.
+ */
+function fx_core_compatibility_check() {
+    $min = '';
+    if ( function_exists( 'fx_core_requirements' ) ) {
+        $req = fx_core_requirements();
+        if ( is_array( $req ) && ! empty( $req['theme_min'] ) ) {
+            $min = (string) $req['theme_min'];
+        }
+    } elseif ( function_exists( 'fx_core_min_theme_version' ) ) {
+        $min = (string) fx_core_min_theme_version();
+    } elseif ( defined( 'FX_CORE_MIN_THEME' ) ) {
+        $min = (string) FX_CORE_MIN_THEME;
+    }
+
+    if ( $min ) {
+        $current = wp_get_theme()->get( 'Version' );
+        update_option( 'fortiveax_required_theme_version', $min );
+        if ( $current && version_compare( $current, $min, '<' ) ) {
+            update_option( 'fortiveax_core_requires_theme_update', 1 );
+        } else {
+            update_option( 'fortiveax_core_requires_theme_update', 0 );
+        }
+    }
+}
+add_action( 'init', 'fx_core_compatibility_check', 5 );
