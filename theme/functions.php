@@ -5,9 +5,13 @@
  * @package FortiveaX
  */
 
-if ( ! function_exists( 'fx_core_present' ) ) {
-    update_option( 'fortiveax_integrity_fail', 1 );
+// Flag integrity if MU core is missing.
+function fx_integrity_check_core_presence() {
+    if ( ! function_exists( 'fx_core_present' ) ) {
+        update_option( 'fortiveax_integrity_fail', 1 );
+    }
 }
+add_action( 'after_setup_theme', 'fx_integrity_check_core_presence', 0 );
 
 /**
  * Set up theme supports, menus, and editor styles.

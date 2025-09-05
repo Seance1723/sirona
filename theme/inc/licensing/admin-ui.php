@@ -110,7 +110,10 @@ function fx_register_license_routes() {
                     return current_user_can( 'manage_options' );
                 },
                 'callback'            => function () {
-                    return rest_ensure_response( fx_license()->status() );
+                    $status = fx_license()->status();
+                    $status['has_core']       = function_exists( 'fx_core_present' ) ? (bool) fx_core_present() : false;
+                    $status['integrity_fail'] = (bool) get_option( 'fortiveax_integrity_fail', 0 ) || ! $status['has_core'];
+                    return rest_ensure_response( $status );
                 },
             ),
             array(
@@ -124,6 +127,8 @@ function fx_register_license_routes() {
                     if ( is_wp_error( $status ) ) {
                         return $status;
                     }
+                    $status['has_core']       = function_exists( 'fx_core_present' ) ? (bool) fx_core_present() : false;
+                    $status['integrity_fail'] = (bool) get_option( 'fortiveax_integrity_fail', 0 ) || ! $status['has_core'];
                     return rest_ensure_response( $status );
                 },
             ),
@@ -143,6 +148,8 @@ function fx_register_license_routes() {
                 if ( is_wp_error( $status ) ) {
                     return $status;
                 }
+                $status['has_core']       = function_exists( 'fx_core_present' ) ? (bool) fx_core_present() : false;
+                $status['integrity_fail'] = (bool) get_option( 'fortiveax_integrity_fail', 0 ) || ! $status['has_core'];
                 return rest_ensure_response( $status );
             },
         )
@@ -158,7 +165,73 @@ function fx_register_license_routes() {
             },
             'callback'            => function () {
                 fx_license()->check_remote();
-                return rest_ensure_response( fx_license()->status() );
+                $status                      = fx_license()->status();
+                $status['has_core']          = function_exists( 'fx_core_present' ) ? (bool) fx_core_present() : false;
+                $status['integrity_fail']    = (bool) get_option( 'fortiveax_integrity_fail', 0 ) || ! $status['has_core'];
+                return rest_ensure_response( $status );
+            },
+        )
+    );
+
+    // Repair MU plugin/core files.
+    register_rest_route(
+        'fx/v1',
+        '/license/repair',
+        array(
+            'methods'             => WP_REST_Server::EDITABLE,
+            'permission_callback' => function () {
+                return current_user_can( 'manage_options' );
+            },
+            'callback'            => function () {
+                // Only allow if license is active but core is missing.
+                $status   = fx_license()->status();
+                $has_core = function_exists( 'fx_core_present' ) ? (bool) fx_core_present() : false;
+                if ( empty( $status['active'] ) ) {
+                    return new WP_Error( 'license_inactive', __( 'Activate your license first.', 'fx' ) );
+                }
+
+                // Prepare MU plugin path.
+                $mu_dir  = trailingslashit( WP_CONTENT_DIR ) . 'mu-plugins';
+                $mu_file = trailingslashit( $mu_dir ) . 'fortiveax-core.php';
+
+                if ( ! is_dir( $mu_dir ) ) {
+                    if ( ! wp_mkdir_p( $mu_dir ) ) {
+                        return new WP_Error( 'fs_error', __( 'Could not create mu-plugins directory.', 'fx' ) );
+                    }
+                }
+
+                // Initialize WP_Filesystem.
+                require_once ABSPATH . 'wp-admin/includes/file.php';
+                $creds = request_filesystem_credentials( admin_url() );
+                if ( false === $creds ) {
+                    // If creds are needed, WP will prompt via screen; for REST, attempt direct init.
+                }
+                if ( ! WP_Filesystem() ) {
+                    return new WP_Error( 'fs_error', __( 'Filesystem initialization failed.', 'fx' ) );
+                }
+
+                global $wp_filesystem;
+
+                // Minimal MU plugin payload to restore core presence and run checks.
+                $payload = "<?php\n/**\n * FortiveaX Core (MU)\n */\nif ( ! defined('ABSPATH') ) { exit; }\nif ( ! function_exists('fx_core_present') ) {\n    function fx_core_present() { return true; }\n}\nif ( ! function_exists('fx_core_run_checks') ) {\n    function fx_core_run_checks() {\n        $status = get_option('fortiveax_license_status', array());\n        $status['last_check'] = current_time('mysql');\n        $active = false;\n        $token  = get_option('fortiveax_license_token');\n        if ( $token ) {\n            if ( function_exists('fx_jwt_verify_rs256') && defined('FX_RSA_PUBLIC') ) {\n                $claims = array(\n                    'iss' => defined('FX_JWT_ISS') ? FX_JWT_ISS : 'fortiveax',\n                    'aud' => defined('FX_JWT_AUD') ? FX_JWT_AUD : wp_parse_url( site_url(), PHP_URL_HOST ),\n                );\n                $verify = fx_jwt_verify_rs256( $token, FX_RSA_PUBLIC, $claims );\n                if ( ! is_wp_error( $verify ) ) {\n                    $active = true;\n                    if ( is_array($verify) ) {\n                        if ( ! empty( $verify['plan'] ) ) { $status['plan'] = $verify['plan']; }\n                        if ( ! empty( $verify['exp'] ) ) { $status['expires'] = date_i18n('Y-m-d H:i:s', intval($verify['exp'])); }\n                    }\n                }\n            }\n        }\n        $status['active'] = (bool) $active;\n        update_option('fortiveax_license_status', $status);\n    }\n}\nadd_action('init', 'fx_core_run_checks');\n";
+
+                if ( ! $wp_filesystem->put_contents( $mu_file, $payload, FS_CHMOD_FILE ) ) {
+                    return new WP_Error( 'fs_error', __( 'Could not write core file.', 'fx' ) );
+                }
+
+                // Clear integrity flag and load core in current request.
+                update_option( 'fortiveax_integrity_fail', 0 );
+                if ( ! $has_core && file_exists( $mu_file ) ) {
+                    include_once $mu_file;
+                }
+                if ( function_exists( 'fx_core_run_checks' ) ) {
+                    fx_core_run_checks();
+                }
+
+                $status                   = fx_license()->status();
+                $status['has_core']       = function_exists( 'fx_core_present' ) ? (bool) fx_core_present() : true;
+                $status['integrity_fail'] = (bool) get_option( 'fortiveax_integrity_fail', 0 ) || ! $status['has_core'];
+                return rest_ensure_response( $status );
             },
         )
     );

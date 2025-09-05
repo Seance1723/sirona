@@ -69,6 +69,8 @@
                 });
         };
 
+        const showRepair = info.active && (info.integrity_fail || info.has_core === false);
+
         if ( info.active ) {
             return createElement(
                 'div',
@@ -76,6 +78,20 @@
                 info.plan && createElement('p', null, 'Plan: ' + info.plan),
                 info.expires && createElement('p', null, 'Expires: ' + info.expires),
                 info.last_check && createElement('p', null, 'Last Check: ' + info.last_check),
+                showRepair && createElement('div', { className: 'notice inline notice-warning' },
+                    createElement('p', null, 'Core files are missing or corrupted. Repair to restore verification.'),
+                    createElement('button', {
+                        className: 'button button-primary',
+                        onClick: () => {
+                            setStatus('running');
+                            setError('');
+                            apiFetch({ path: fxLicense.restBase + '/license/repair', method: 'POST' })
+                                .then((res) => { setInfo(res || {}); setStatus('idle'); })
+                                .catch((err) => { setStatus('idle'); setError(err.message || 'Error'); });
+                        },
+                        disabled: status === 'running'
+                    }, status === 'running' ? 'Repairing...' : 'Repair Core')
+                ),
                 error && createElement('p', { className: 'fx-license-error' }, error),
                 createElement(
                     'div',
