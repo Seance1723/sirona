@@ -30,7 +30,7 @@ function fx_demo_import_admin_menu() {
         'fx_demo_import_admin_page'
     );
 }
-add_action( 'admin_menu', 'fx_demo_import_admin_menu' );
+add_action( 'admin_menu', 'fx_demo_import_admin_menu', 11 );
 
 /**
  * Render the Demo Import admin page.

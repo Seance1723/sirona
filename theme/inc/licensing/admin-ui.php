@@ -22,7 +22,7 @@ function fx_register_license_page() {
         'fx_render_license_page'
     );
 }
-add_action( 'admin_menu', 'fx_register_license_page' );
+add_action( 'admin_menu', 'fx_register_license_page', 11 );
 
 /**
  * Render the license page container.

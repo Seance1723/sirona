@@ -26,7 +26,7 @@ function fx_register_setup_wizard_page() {
         'fx_render_setup_wizard_page'
     );
 }
-add_action( 'admin_menu', 'fx_register_setup_wizard_page' );
+add_action( 'admin_menu', 'fx_register_setup_wizard_page', 11 );
 
 /**
  * Render the Setup Wizard page markup.
@@ -185,9 +185,16 @@ function fx_wizard_run_step( $request ) {
                     'aud' => defined( 'FX_JWT_AUD' ) ? FX_JWT_AUD : wp_parse_url( site_url(), PHP_URL_HOST ),
                 );
 
-                $verify = fx_jwt_verify_rs256( $data['token'], FX_RSA_PUBLIC, $claims );
-                if ( is_wp_error( $verify ) ) {
-                    return new WP_Error( 'login_verify', __( 'Token verification failed.', 'fx' ), array( 'status' => 400 ) );
+                // Verify only if MU verification helpers exist; otherwise, store token and let MU core verify.
+                $verified_claims = array();
+                if ( function_exists( 'fx_jwt_verify_rs256' ) && defined( 'FX_RSA_PUBLIC' ) ) {
+                    $verify = fx_jwt_verify_rs256( $data['token'], FX_RSA_PUBLIC, $claims );
+                    if ( is_wp_error( $verify ) ) {
+                        return new WP_Error( 'login_verify', __( 'Token verification failed.', 'fx' ), array( 'status' => 400 ) );
+                    }
+                    if ( is_array( $verify ) ) {
+                        $verified_claims = $verify;
+                    }
                 }
 
                 update_option( 'fortiveax_license_token', $data['token'] );
@@ -195,11 +202,12 @@ function fx_wizard_run_step( $request ) {
                     fx_core_run_checks();
                 }
                 $status = get_option( 'fortiveax_license_status', array() );
-                if ( isset( $verify['plan'] ) ) {
-                    $status['plan'] = $verify['plan'];
+                if ( isset( $verified_claims['plan'] ) ) {
+                    $status['plan'] = $verified_claims['plan'];
                 } elseif ( isset( $data['plan'] ) ) {
                     $status['plan'] = $data['plan'];
                 }
+                update_option( 'fortiveax_license_status', $status );
                 return rest_ensure_response( array( 'success' => true, 'status' => $status ) );
             }
 

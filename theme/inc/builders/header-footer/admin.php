@@ -27,7 +27,7 @@ function fx_hf_register_builder_page() {
         'fx_hf_builder_page'
     );
 }
-add_action( 'admin_menu', 'fx_hf_register_builder_page' );
+add_action( 'admin_menu', 'fx_hf_register_builder_page', 11 );
 
 /**
  * Render the builder page.
