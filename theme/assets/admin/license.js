@@ -76,8 +76,9 @@
                 'div',
                 { className: 'fx-license-screen' },
                 info.plan && createElement('p', null, 'Plan: ' + info.plan),
-                info.expires && createElement('p', null, 'Expires: ' + info.expires),
+                (info.exp ? createElement('p', null, 'Expires: ' + new Date(parseInt(info.exp, 10) * 1000).toLocaleString()) : null),
                 info.last_check && createElement('p', null, 'Last Check: ' + info.last_check),
+                (info.grace ? createElement('p', { className: 'notice inline notice-warning' }, 'License expired. Pro remains active during a 7-day grace period.') : null),
                 showRepair && createElement('div', { className: 'notice inline notice-warning' },
                     createElement('p', null, 'Core files are missing or corrupted. Repair to restore verification.'),
                     createElement('button', {
@@ -112,9 +113,11 @@
                     { className: 'fx-license-links' },
                     createElement('a', { href: fxLicense.links.wizard }, 'Setup Wizard'),
                     ' | ',
-                    createElement('a', { href: fxLicense.links.support }, 'Support')
+                    createElement('a', { href: fxLicense.links.support }, 'Support'),
+                    ' | ',
+                    createElement('a', { href: fxLicense.links.docs }, 'Privacy & Licensing Docs')
                 ),
-                createElement('p', { className: 'privacy-note' }, 'License data is used only for verification.')
+                createElement('p', { className: 'privacy-note' }, 'We store only token, plan, exp, and last check to verify your license. No personal content is sent.')
             );
         }
 
@@ -148,9 +151,11 @@
                 { className: 'fx-license-links' },
                 createElement('a', { href: fxLicense.links.wizard }, 'Setup Wizard'),
                 ' | ',
-                createElement('a', { href: fxLicense.links.support }, 'Support')
+                createElement('a', { href: fxLicense.links.support }, 'Support'),
+                ' | ',
+                createElement('a', { href: fxLicense.links.docs }, 'Privacy & Licensing Docs')
             ),
-            createElement('p', { className: 'privacy-note' }, 'License data is used only for verification.')
+            createElement('p', { className: 'privacy-note' }, 'We store only token, plan, exp, and last check to verify your license. No personal content is sent.')
         );
     }
 

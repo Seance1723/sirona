@@ -80,13 +80,37 @@ class FX_License {
             fx_core_run_checks();
         }
 
+        // Persist minimal status fields only: plan, exp, last_check.
         $status = get_option( self::STATUS_OPTION, array() );
-        if ( isset( $data['plan'] ) && ! isset( $status['plan'] ) ) {
-            $status['plan'] = $data['plan'];
-            update_option( self::STATUS_OPTION, $status );
+        $claims = array();
+        if ( function_exists( 'fx_jwt_verify_rs256' ) && defined( 'FX_RSA_PUBLIC' ) ) {
+            $claims = array(
+                'iss' => defined( 'FX_JWT_ISS' ) ? FX_JWT_ISS : 'fortiveax',
+                'aud' => defined( 'FX_JWT_AUD' ) ? FX_JWT_AUD : wp_parse_url( site_url(), PHP_URL_HOST ),
+            );
         }
+        if ( ! empty( $data['plan'] ) ) {
+            $status['plan'] = sanitize_text_field( $data['plan'] );
+        }
+        // Try to decode or trust server-provided exp if present.
+        if ( ! empty( $data['exp'] ) && is_numeric( $data['exp'] ) ) {
+            $status['exp'] = (int) $data['exp'];
+        } elseif ( ! empty( $claims ) && function_exists( 'fx_jwt_verify_rs256' ) ) {
+            $verified = fx_jwt_verify_rs256( $data['token'], FX_RSA_PUBLIC, $claims );
+            if ( is_array( $verified ) ) {
+                if ( isset( $verified['plan'] ) ) {
+                    $status['plan'] = sanitize_text_field( $verified['plan'] );
+                }
+                if ( isset( $verified['exp'] ) && is_numeric( $verified['exp'] ) ) {
+                    $status['exp'] = (int) $verified['exp'];
+                }
+            }
+        }
+        $status['last_check'] = current_time( 'mysql' );
+        update_option( self::STATUS_OPTION, $status );
 
-        return $status;
+        // Return the refreshed status from option (MU plugin will set active on next run).
+        return get_option( self::STATUS_OPTION, array() );
     }
 
     /**
@@ -145,7 +169,8 @@ class FX_License {
 
         set_transient( self::RATE_LIMIT . '_check', time(), MINUTE_IN_SECONDS );
 
-        if ( function_exists( 'fx_core_run_checks' ) ) {
+        // Avoid network side-effects on frontend; defer to core checks if present.
+        if ( is_admin() && function_exists( 'fx_core_run_checks' ) ) {
             fx_core_run_checks();
         }
 
