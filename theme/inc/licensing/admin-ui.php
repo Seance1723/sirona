@@ -114,6 +114,9 @@ function fx_register_license_routes() {
                     $status = fx_license()->status();
                     $status['has_core']       = function_exists( 'fx_core_present' ) ? (bool) fx_core_present() : false;
                     $status['integrity_fail'] = (bool) get_option( 'fortiveax_integrity_fail', 0 ) || ! $status['has_core'];
+                    if ( function_exists( 'fx_integrity_get_diff' ) ) {
+                        $status['integrity'] = fx_integrity_get_diff();
+                    }
                     return rest_ensure_response( $status );
                 },
             ),
@@ -130,6 +133,9 @@ function fx_register_license_routes() {
                     }
                     $status['has_core']       = function_exists( 'fx_core_present' ) ? (bool) fx_core_present() : false;
                     $status['integrity_fail'] = (bool) get_option( 'fortiveax_integrity_fail', 0 ) || ! $status['has_core'];
+                    if ( function_exists( 'fx_integrity_get_diff' ) ) {
+                        $status['integrity'] = fx_integrity_get_diff();
+                    }
                     return rest_ensure_response( $status );
                 },
             ),
@@ -166,9 +172,12 @@ function fx_register_license_routes() {
             },
             'callback'            => function () {
                 fx_license()->check_remote();
-                $status                      = fx_license()->status();
-                $status['has_core']          = function_exists( 'fx_core_present' ) ? (bool) fx_core_present() : false;
-                $status['integrity_fail']    = (bool) get_option( 'fortiveax_integrity_fail', 0 ) || ! $status['has_core'];
+                $status                   = fx_license()->status();
+                $status['has_core']       = function_exists( 'fx_core_present' ) ? (bool) fx_core_present() : false;
+                $status['integrity_fail'] = (bool) get_option( 'fortiveax_integrity_fail', 0 ) || ! $status['has_core'];
+                if ( function_exists( 'fx_integrity_get_diff' ) ) {
+                    $status['integrity'] = fx_integrity_get_diff();
+                }
                 return rest_ensure_response( $status );
             },
         )
@@ -214,9 +223,59 @@ function fx_register_license_routes() {
                 global $wp_filesystem;
 
                 // Minimal MU plugin payload to restore core presence and run checks.
-                $payload = "<?php\n/**\n * FortiveaX Core (MU)\n */\nif ( ! defined('ABSPATH') ) { exit; }\nif ( ! function_exists('fx_core_present') ) {\n    function fx_core_present() { return true; }\n}\nif ( ! function_exists('fx_core_run_checks') ) {\n    function fx_core_run_checks() {\n        $status = get_option('fortiveax_license_status', array());\n        $status['last_check'] = current_time('mysql');\n        $active = false;\n        $grace  = false;\n        $token  = get_option('fortiveax_license_token');\n        if ( $token ) {\n            if ( function_exists('fx_jwt_verify_rs256') && defined('FX_RSA_PUBLIC') ) {\n                $claims = array(\n                    'iss' => defined('FX_JWT_ISS') ? FX_JWT_ISS : 'fortiveax',\n                    'aud' => defined('FX_JWT_AUD') ? FX_JWT_AUD : wp_parse_url( site_url(), PHP_URL_HOST ),\n                );\n                $verify = fx_jwt_verify_rs256( $token, FX_RSA_PUBLIC, $claims );\n                if ( ! is_wp_error( $verify ) ) {\n                    if ( is_array($verify) ) {\n                        if ( ! empty( $verify['plan'] ) ) { $status['plan'] = $verify['plan']; }\n                        if ( isset( $verify['exp'] ) && is_numeric( $verify['exp'] ) ) { $status['exp'] = intval($verify['exp']); }\n                    }\n                }\n            }\n        }\n        // Determine active state with 7-day offline grace after exp.
-        $now = time();\n        if ( ! empty( $status['exp'] ) && is_numeric( $status['exp'] ) ) {\n            $exp = intval( $status['exp'] );\n            if ( $now <= ( $exp + 7 * DAY_IN_SECONDS ) ) {\n                $active = true;\n                $grace  = ( $now > $exp );\n            } else {\n                $active = false;\n                $grace  = false;\n            }\n        } else {\n            // If no exp known but token exists, assume active until next check.
-            if ( $token ) { $active = true; }\n        }\n        $status['active'] = (bool) $active;\n        $status['grace']  = (bool) $grace;\n        update_option('fortiveax_license_status', $status);\n    }\n}\nadd_action('init', 'fx_core_run_checks');\n";
+                $payload = <<<'MU'
+<?php
+/**
+ * FortiveaX Core (MU)
+ */
+if ( ! defined('ABSPATH') ) { exit; }
+if ( ! function_exists('fx_core_present') ) {
+    function fx_core_present() { return true; }
+}
+if ( ! function_exists('fx_core_run_checks') ) {
+    function fx_core_run_checks() {
+        $status = get_option('fortiveax_license_status', array());
+        $status['last_check'] = current_time('mysql');
+        $active = false;
+        $grace  = false;
+        $token  = get_option('fortiveax_license_token');
+        if ( $token ) {
+            if ( function_exists('fx_jwt_verify_rs256') && defined('FX_RSA_PUBLIC') ) {
+                $claims = array(
+                    'iss' => defined('FX_JWT_ISS') ? FX_JWT_ISS : 'fortiveax',
+                    'aud' => defined('FX_JWT_AUD') ? FX_JWT_AUD : wp_parse_url( site_url(), PHP_URL_HOST ),
+                );
+                $verify = fx_jwt_verify_rs256( $token, FX_RSA_PUBLIC, $claims );
+                if ( ! is_wp_error( $verify ) ) {
+                    if ( is_array($verify) ) {
+                        if ( ! empty( $verify['plan'] ) ) { $status['plan'] = $verify['plan']; }
+                        if ( isset( $verify['exp'] ) && is_numeric( $verify['exp'] ) ) { $status['exp'] = intval($verify['exp']); }
+                    }
+                }
+            }
+        }
+        // Determine active state with 7-day offline grace after exp.
+        $now = time();
+        if ( ! empty( $status['exp'] ) && is_numeric( $status['exp'] ) ) {
+            $exp = intval( $status['exp'] );
+            if ( $now <= ( $exp + 7 * DAY_IN_SECONDS ) ) {
+                $active = true;
+                $grace  = ( $now > $exp );
+            } else {
+                $active = false;
+                $grace  = false;
+            }
+        } else {
+            // If no exp known but token exists, assume active until next check.
+            if ( $token ) { $active = true; }
+        }
+        $status['active'] = (bool) $active;
+        $status['grace']  = (bool) $grace;
+        update_option('fortiveax_license_status', $status);
+    }
+}
+add_action('init', 'fx_core_run_checks');
+MU;
 
                 if ( ! $wp_filesystem->put_contents( $mu_file, $payload, FS_CHMOD_FILE ) ) {
                     return new WP_Error( 'fs_error', __( 'Could not write core file.', 'fx' ) );
@@ -234,6 +293,94 @@ function fx_register_license_routes() {
                 $status                   = fx_license()->status();
                 $status['has_core']       = function_exists( 'fx_core_present' ) ? (bool) fx_core_present() : true;
                 $status['integrity_fail'] = (bool) get_option( 'fortiveax_integrity_fail', 0 ) || ! $status['has_core'];
+                if ( function_exists( 'fx_integrity_get_diff' ) ) {
+                    $status['integrity'] = fx_integrity_get_diff();
+                }
+                return rest_ensure_response( $status );
+            },
+        )
+    );
+
+    // Repair theme files from a local package if provided.
+    register_rest_route(
+        'fx/v1',
+        '/integrity/repair',
+        array(
+            'methods'             => WP_REST_Server::EDITABLE,
+            'permission_callback' => function () { return current_user_can( 'manage_options' ); },
+            'callback'            => function () {
+                require_once ABSPATH . 'wp-admin/includes/file.php';
+                require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+                $uploads   = wp_upload_dir();
+                $pkg_dir   = trailingslashit( $uploads['basedir'] ) . 'fortiveax';
+                $pkg_path  = trailingslashit( $pkg_dir ) . 'fortiveax-theme.zip';
+                if ( ! file_exists( $pkg_path ) ) {
+                    return new WP_Error( 'package_missing', sprintf( __( 'Upload a theme package to %s and retry.', 'fx' ), esc_html( str_replace( ABSPATH, '/', $pkg_path ) ) ) );
+                }
+
+                if ( ! wp_mkdir_p( $pkg_dir ) ) {
+                    return new WP_Error( 'fs_error', __( 'Could not prepare temporary directory.', 'fx' ) );
+                }
+                if ( ! WP_Filesystem() ) {
+                    return new WP_Error( 'fs_error', __( 'Filesystem initialization failed.', 'fx' ) );
+                }
+                global $wp_filesystem;
+
+                $tmp = trailingslashit( $pkg_dir ) . '_tmp_' . wp_generate_password( 6, false );
+                if ( ! wp_mkdir_p( $tmp ) ) {
+                    return new WP_Error( 'fs_error', __( 'Could not create temp directory.', 'fx' ) );
+                }
+
+                $unzipped = unzip_file( $pkg_path, $tmp );
+                if ( is_wp_error( $unzipped ) ) {
+                    return $unzipped;
+                }
+
+                // Find extracted theme folder by looking for style.css containing Theme Name of current theme.
+                $stylesheet = wp_get_theme()->get_stylesheet();
+                $extracted  = '';
+                $rii        = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $tmp, FilesystemIterator::SKIP_DOTS ), RecursiveIteratorIterator::SELF_FIRST );
+                foreach ( $rii as $file ) {
+                    /** @var SplFileInfo $file */
+                    if ( $file->isFile() && 'style.css' === $file->getFilename() ) {
+                        $candidate = dirname( $file->getPathname() );
+                        // A simple heuristic: parent directory name equals stylesheet slug.
+                        if ( basename( $candidate ) === $stylesheet ) {
+                            $extracted = $candidate;
+                            break;
+                        }
+                    }
+                }
+                if ( empty( $extracted ) ) {
+                    return new WP_Error( 'package_invalid', __( 'Could not locate theme folder inside the package.', 'fx' ) );
+                }
+
+                // Copy files into current theme directory.
+                $dest = get_template_directory();
+                $it   = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $extracted, FilesystemIterator::SKIP_DOTS ), RecursiveIteratorIterator::SELF_FIRST );
+                foreach ( $it as $fs ) {
+                    /** @var SplFileInfo $fs */
+                    $rel  = ltrim( str_replace( '\\', '/', substr( $fs->getPathname(), strlen( $extracted ) ) ), '/');
+                    $dpth = trailingslashit( $dest ) . $rel;
+                    if ( $fs->isDir() ) {
+                        $wp_filesystem->mkdir( $dpth );
+                    } else {
+                        $wp_filesystem->put_contents( $dpth, file_get_contents( $fs->getPathname() ), FS_CHMOD_FILE ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+                    }
+                }
+
+                // Cleanup temp.
+                $wp_filesystem->rmdir( $tmp, true );
+
+                // Refresh integrity state.
+                if ( function_exists( 'fx_integrity_scan' ) ) {
+                    fx_integrity_scan();
+                }
+
+                $status = fx_license()->status();
+                if ( function_exists( 'fx_integrity_get_diff' ) ) {
+                    $status['integrity'] = fx_integrity_get_diff();
+                }
                 return rest_ensure_response( $status );
             },
         )

@@ -93,6 +93,25 @@
                         disabled: status === 'running'
                     }, status === 'running' ? 'Repairing...' : 'Repair Core')
                 ),
+                info.integrity && (info.integrity.changed?.length || info.integrity.missing?.length) ? createElement('div', { className: 'notice inline notice-error' },
+                    createElement('p', null, 'Integrity drift detected.'),
+                    createElement('ul', { style: { maxHeight: '140px', overflowY: 'auto' } },
+                        ...(info.integrity.changed || []).slice(0, 5).map((f) => createElement('li', { key: 'c-'+f }, 'Changed: ' + f )),
+                        ...(info.integrity.missing || []).slice(0, 5).map((f) => createElement('li', { key: 'm-'+f }, 'Missing: ' + f ))
+                    ),
+                    createElement('div', null,
+                        createElement('button', {
+                            className: 'button',
+                            onClick: () => {
+                                setStatus('running'); setError('');
+                                apiFetch({ path: fxLicense.restBase + '/integrity/repair', method: 'POST' })
+                                .then((res) => { setInfo(res || {}); setStatus('idle'); })
+                                .catch((err) => { setStatus('idle'); setError(err.message || 'Error'); });
+                            },
+                            disabled: status === 'running'
+                        }, status === 'running' ? 'Repairing…' : 'Repair Theme')
+                    )
+                ) : null,
                 error && createElement('p', { className: 'fx-license-error' }, error),
                 createElement(
                     'div',

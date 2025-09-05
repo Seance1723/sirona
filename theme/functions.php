@@ -269,6 +269,10 @@ if ( is_admin() ) {
     require_once get_theme_file_path( 'inc/licensing/admin-ui.php' );
 }
 require_once get_theme_file_path( 'inc/integrity/features.php' );
+require_once get_theme_file_path( 'inc/integrity/scanner.php' );
+if ( is_admin() ) {
+    require_once get_theme_file_path( 'inc/integrity/admin.php' );
+}
 add_action( 'init', array( fx_license(), 'schedule_cron' ) );
 require_once get_theme_file_path( 'inc/options.php' );
 require_once get_theme_file_path( 'inc/custom-post-types.php' );
