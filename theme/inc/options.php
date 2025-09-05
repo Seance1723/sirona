@@ -580,6 +580,8 @@ function fx_options_page_html() {
     }
 
     $tabs = array(
+        // License tab is rendered as a standalone screen inside Options.
+        'license'       => __( 'License', 'fx' ),
         'branding'      => __( 'Branding', 'fx' ),
         'header'        => __( 'Header', 'fx' ),
         'footer'        => __( 'Footer', 'fx' ),
@@ -629,13 +631,17 @@ function fx_options_page_html() {
                 ?>
             </div>
             <div class="fx-options-content">
-                <form method="post" action="options.php">
-                    <?php
-                    settings_fields( 'fx_options' );
-                    do_settings_sections( 'fx_' . $active_tab );
-                    submit_button();
-                    ?>
-                </form>
+                <?php if ( 'license' === $active_tab ) : ?>
+                    <div id="fx-license-app"></div>
+                <?php else : ?>
+                    <form method="post" action="options.php">
+                        <?php
+                        settings_fields( 'fx_options' );
+                        do_settings_sections( 'fx_' . $active_tab );
+                        submit_button();
+                        ?>
+                    </form>
+                <?php endif; ?>
             </div>
         </div>
     </div>

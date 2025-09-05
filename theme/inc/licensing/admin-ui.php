@@ -41,7 +41,23 @@ function fx_render_license_page() {
  * @param string $hook Admin hook.
  */
 function fx_license_assets( $hook ) {
-    if ( 'fortiveax_page_fx-license' !== $hook && 'toplevel_page_fx-license' !== $hook && 'fx-dashboard_page_fx-license' !== $hook ) {
+    $is_license_page = in_array(
+        $hook,
+        array(
+            'fortiveax_page_fx-license',
+            'toplevel_page_fx-license',
+            'fx-dashboard_page_fx-license',
+        ),
+        true
+    );
+
+    // Also allow enqueuing within Theme Options when the License tab is active.
+    $is_options_license_tab = (
+        'fx-dashboard_page_fx-options' === $hook &&
+        isset( $_GET['tab'] ) && 'license' === sanitize_key( wp_unslash( $_GET['tab'] ) )
+    );
+
+    if ( ! $is_license_page && ! $is_options_license_tab ) {
         return;
     }
 
@@ -71,7 +87,7 @@ function fx_license_assets( $hook ) {
             'restBase' => esc_url_raw( rest_url( 'fx/v1' ) ),
             'links'    => array(
                 'wizard'  => admin_url( 'admin.php?page=fx-setup' ),
-                'support' => '#',
+                'support' => fx_get_option( 'wl_support_url', '#' ),
             ),
         );
 

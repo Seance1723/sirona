@@ -101,6 +101,12 @@ class FX_License {
 
         delete_option( self::TOKEN_OPTION );
 
+        // Immediately reflect deactivated state in status to avoid stale UI/pro flags.
+        $status              = get_option( self::STATUS_OPTION, array() );
+        $status['active']    = false;
+        $status['last_check'] = current_time( 'mysql' );
+        update_option( self::STATUS_OPTION, $status );
+
         if ( function_exists( 'fx_core_run_checks' ) ) {
             fx_core_run_checks();
         }
